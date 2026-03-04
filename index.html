@@ -629,15 +629,18 @@
 <nav>
   <a href="#" class="nav-brand">
     <svg class="nav-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="50,8 96,84 4,84" stroke="#a78bfa" stroke-width="5" fill="none" stroke-linejoin="round"/>
-      <line x1="50" y1="34" x2="50" y2="68" stroke="#f4c24f" stroke-width="4" stroke-linecap="round"/>
-      <line x1="39" y1="55" x2="61" y2="55" stroke="#f4c24f" stroke-width="3.5" stroke-linecap="round"/>
-      <line x1="50" y1="34" x2="50" y2="21" stroke="#f4c24f" stroke-width="4" stroke-linecap="round"/>
-      <polygon points="50,17 47,26 53,26" fill="#f4c24f"/>
-      <path d="M40,38 Q37.5,29 40,25 Q42.5,29 40,38" stroke="#f4c24f" stroke-width="3" fill="none"/>
-      <polygon points="40,22 37,29 43,29" fill="#f4c24f"/>
-      <path d="M60,38 Q62.5,29 60,25 Q57.5,29 60,38" stroke="#f4c24f" stroke-width="3" fill="none"/>
-      <polygon points="60,22 57,29 63,29" fill="#f4c24f"/>
+      <!-- Inverted triangle, sharp miter corners, thick stroke -->
+      <polygon points="50,93 5,7 95,7" stroke="#a78bfa" stroke-width="5.5" fill="none" stroke-linejoin="miter" stroke-miterlimit="10"/>
+      <!-- Shaft -->
+      <line x1="50" y1="28" x2="50" y2="76" stroke="#f4c24f" stroke-width="4.5" stroke-linecap="butt"/>
+      <!-- Center prong: arrowhead pointing up -->
+      <polyline points="43,28 50,13 57,28" stroke="#f4c24f" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      <!-- Left prong: curves out-left, up, hooks back (fishhook/Neptune style) -->
+      <path d="M50,32 C43,32 36,29 32,24 C28,19 29,13 33,12 C37,11 38,15 35,18" stroke="#f4c24f" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <!-- Right prong: mirror of left -->
+      <path d="M50,32 C57,32 64,29 68,24 C72,19 71,13 67,12 C63,11 62,15 65,18" stroke="#f4c24f" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <!-- Crossbar / guard -->
+      <line x1="43" y1="57" x2="57" y2="57" stroke="#f4c24f" stroke-width="4" stroke-linecap="round"/>
     </svg>
     <span class="nav-wordmark">COS <em>TRINITY</em></span>
   </a>
@@ -748,16 +751,13 @@
     <div class="product-card">
       <div class="product-header">
         <div class="product-logo">
-          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="50,8 96,84 4,84" stroke="#f4c24f" stroke-width="5.5" fill="none" stroke-linejoin="round"/>
-            <line x1="50" y1="35" x2="50" y2="68" stroke="#f4c24f" stroke-width="4.5" stroke-linecap="round"/>
-            <line x1="39" y1="55" x2="61" y2="55" stroke="#f4c24f" stroke-width="4" stroke-linecap="round"/>
-            <line x1="50" y1="35" x2="50" y2="21" stroke="#f4c24f" stroke-width="4.5" stroke-linecap="round"/>
-            <polygon points="50,16 46.5,26 53.5,26" fill="#f4c24f"/>
-            <path d="M39,40 Q36,30 39,26 Q42,30 39,40" stroke="#f4c24f" stroke-width="3.5" fill="none"/>
-            <polygon points="39,23 36,30 42,30" fill="#f4c24f"/>
-            <path d="M61,40 Q64,30 61,26 Q58,30 61,40" stroke="#f4c24f" stroke-width="3.5" fill="none"/>
-            <polygon points="61,23 58,30 64,30" fill="#f4c24f"/>
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="50,93 5,7 95,7" stroke="#f4c24f" stroke-width="5.5" fill="none" stroke-linejoin="miter" stroke-miterlimit="10"/>
+            <line x1="50" y1="28" x2="50" y2="76" stroke="#f4c24f" stroke-width="4.5" stroke-linecap="butt"/>
+            <polyline points="43,28 50,13 57,28" stroke="#f4c24f" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+            <path d="M50,32 C43,32 36,29 32,24 C28,19 29,13 33,12 C37,11 38,15 35,18" stroke="#f4c24f" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <path d="M50,32 C57,32 64,29 68,24 C72,19 71,13 67,12 C63,11 62,15 65,18" stroke="#f4c24f" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <line x1="43" y1="57" x2="57" y2="57" stroke="#f4c24f" stroke-width="4" stroke-linecap="round"/>
           </svg>
         </div>
         <div class="product-meta">
@@ -900,16 +900,13 @@
 <!-- ─── CTA ─── -->
 <section class="cta-wrap" id="contact">
   <div class="cta-box">
-    <svg style="width:68px;height:68px;margin:0 auto 28px;display:block;" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <polygon points="50,6 97,88 3,88" stroke="#a78bfa" stroke-width="5" fill="none" stroke-linejoin="round"/>
-      <line x1="50" y1="35" x2="50" y2="70" stroke="#f4c24f" stroke-width="4.5" stroke-linecap="round"/>
-      <line x1="39" y1="56" x2="61" y2="56" stroke="#f4c24f" stroke-width="4" stroke-linecap="round"/>
-      <line x1="50" y1="35" x2="50" y2="21" stroke="#f4c24f" stroke-width="4.5" stroke-linecap="round"/>
-      <polygon points="50,17 47,26 53,26" fill="#f4c24f"/>
-      <path d="M39,39 Q36.5,29 39,25 Q41.5,29 39,39" stroke="#f4c24f" stroke-width="3.5" fill="none"/>
-      <polygon points="39,22 36,29 42,29" fill="#f4c24f"/>
-      <path d="M61,39 Q63.5,29 61,25 Q58.5,29 61,39" stroke="#f4c24f" stroke-width="3.5" fill="none"/>
-      <polygon points="61,22 58,29 64,29" fill="#f4c24f"/>
+    <svg style="width:72px;height:72px;margin:0 auto 28px;display:block;" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="50,93 5,7 95,7" stroke="#a78bfa" stroke-width="5.5" fill="none" stroke-linejoin="miter" stroke-miterlimit="10"/>
+      <line x1="50" y1="28" x2="50" y2="76" stroke="#f4c24f" stroke-width="4.5" stroke-linecap="butt"/>
+      <polyline points="43,28 50,13 57,28" stroke="#f4c24f" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M50,32 C43,32 36,29 32,24 C28,19 29,13 33,12 C37,11 38,15 35,18" stroke="#f4c24f" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path d="M50,32 C57,32 64,29 68,24 C72,19 71,13 67,12 C63,11 62,15 65,18" stroke="#f4c24f" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <line x1="43" y1="57" x2="57" y2="57" stroke="#f4c24f" stroke-width="4" stroke-linecap="round"/>
     </svg>
     <h2>READY TO GET <span style="color:var(--purple-lt);">ACCESS?</span></h2>
     <p>
@@ -928,15 +925,12 @@
   <div class="footer-row">
     <a href="#" class="footer-brand">
       <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="50,10 94,82 6,82" stroke="#a78bfa" stroke-width="6" fill="none" stroke-linejoin="round"/>
-        <line x1="50" y1="38" x2="50" y2="66" stroke="#f4c24f" stroke-width="5" stroke-linecap="round"/>
-        <line x1="41" y1="54" x2="59" y2="54" stroke="#f4c24f" stroke-width="4" stroke-linecap="round"/>
-        <line x1="50" y1="38" x2="50" y2="25" stroke="#f4c24f" stroke-width="5" stroke-linecap="round"/>
-        <polygon points="50,21 47,29 53,29" fill="#f4c24f"/>
-        <path d="M41,41 Q38.5,32 41,28 Q43.5,32 41,41" stroke="#f4c24f" stroke-width="3.5" fill="none"/>
-        <polygon points="41,25 38,32 44,32" fill="#f4c24f"/>
-        <path d="M59,41 Q61.5,32 59,28 Q56.5,32 59,41" stroke="#f4c24f" stroke-width="3.5" fill="none"/>
-        <polygon points="59,25 56,32 62,32" fill="#f4c24f"/>
+        <polygon points="50,93 5,7 95,7" stroke="#a78bfa" stroke-width="5.5" fill="none" stroke-linejoin="miter" stroke-miterlimit="10"/>
+        <line x1="50" y1="28" x2="50" y2="76" stroke="#f4c24f" stroke-width="4.5" stroke-linecap="butt"/>
+        <polyline points="43,28 50,13 57,28" stroke="#f4c24f" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M50,32 C43,32 36,29 32,24 C28,19 29,13 33,12 C37,11 38,15 35,18" stroke="#f4c24f" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M50,32 C57,32 64,29 68,24 C72,19 71,13 67,12 C63,11 62,15 65,18" stroke="#f4c24f" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <line x1="43" y1="57" x2="57" y2="57" stroke="#f4c24f" stroke-width="4" stroke-linecap="round"/>
       </svg>
       <span class="footer-wordmark">COS <em>TRINITY</em></span>
     </a>
