@@ -209,40 +209,7 @@
     }
     .btn-tg svg { width: 18px; height: 18px; flex-shrink: 0; }
 
-    /* Floating Telegram widget */
-    .tg-float {
-      position: fixed; bottom: 28px; right: 28px; z-index: 200;
-      display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
-    }
-    .tg-float-bubble {
-      background: rgba(13,13,50,0.95);
-      border: 1px solid rgba(34,158,217,0.4);
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 13px; color: var(--text);
-      max-width: 220px; line-height: 1.4;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-      animation: floatIn 0.4s ease;
-    }
-    .tg-float-bubble strong { color: #229ED9; }
-    @keyframes floatIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .tg-float-btn {
-      width: 60px; height: 60px; border-radius: 50%;
-      background: linear-gradient(135deg, #229ED9, #1a85b8);
-      border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 24px rgba(34,158,217,0.5);
-      text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .tg-float-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 6px 32px rgba(34,158,217,0.65);
-    }
-    .tg-float-btn svg { width: 30px; height: 30px; fill: #fff; }
+
 
     /* hero stats */
     .hero-stats {
@@ -1047,16 +1014,6 @@ function toggleSnipr(btn) {
 }
 </script>
 
-<!-- ─── FLOATING TELEGRAM BUTTON ─── -->
-<div class="tg-float">
-  <div class="tg-float-bubble">
-    <strong>Chat with SNiPr Bot</strong><br>
-    Get started directly in Telegram — no signup needed.
-  </div>
-  <a href="https://t.me/COSTRINSNIPBOT?start=website" target="_blank" class="tg-float-btn" title="Open SNiPr in Telegram">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-  </a>
-</div>
 
 </body>
 </html>
