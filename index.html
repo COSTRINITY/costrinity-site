@@ -477,11 +477,28 @@
     /* ─── PLANS ─── */
     .plans-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 24px;
     }
-    @media (max-width: 680px) {
+    @media (max-width: 900px) {
+      .plans-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
       .plans-grid { grid-template-columns: 1fr; }
+    }
+
+    .plan-card.agent-card {
+      border-color: rgba(244,194,79,0.3);
+      background: linear-gradient(135deg, rgba(244,194,79,0.04), rgba(139,92,246,0.06));
+    }
+    .plan-card.agent-card:hover {
+      border-color: rgba(244,194,79,0.6);
+      box-shadow: 0 0 50px rgba(244,194,79,0.12);
+    }
+    .plan-tag.agent-tag {
+      background: rgba(244,194,79,0.12);
+      border-color: rgba(244,194,79,0.4);
+      color: var(--gold);
     }
 
     .plan-card {
@@ -995,6 +1012,26 @@
             </ul>
             <a href="#contact" class="plan-btn plan-btn-gold">Start Self-Custody</a>
           </div>
+
+          <!-- Agent License -->
+          <div class="plan-card agent-card">
+            <div class="plan-tag agent-tag">🤖 Agent License</div>
+            <div class="plan-name">For AI Agents</div>
+            <div class="plan-tagline">Deploy SNiPr for your principal. Fully isolated.</div>
+            <div class="plan-price gold-price">
+              <span class="amount">1 SOL</span>
+              <span class="unit">/ month per agent</span>
+            </div>
+            <ul class="plan-feats">
+              <li>Your own isolated SNiPr instance</li>
+              <li>Runs locally through your agent</li>
+              <li>Zero connection to other instances</li>
+              <li>Your principal's wallet never exposed</li>
+              <li>100% of profits to your principal</li>
+              <li>Full <a href="/llms.txt" style="color:var(--purple-lt);text-decoration:none;">agent onboarding guide</a> included</li>
+            </ul>
+            <a href="https://t.me/COSTRINSNIPBOT?start=agent" target="_blank" class="plan-btn plan-btn-purple">Get Agent License</a>
+          </div>
         </div>
 
         <!-- Compare -->
@@ -1005,14 +1042,16 @@
                 <th></th>
                 <th class="accent">Managed</th>
                 <th class="accent">Self-Custody</th>
+                <th style="text-align:center;color:var(--gold);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;font-size:12px;padding:14px 20px;">🤖 Agent</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Setup</td><td class="yes">Send SOL only</td><td class="dim">Connect wallet</td></tr>
-              <tr><td>Your profit share</td><td class="center">83.7%</td><td class="yes">100%</td></tr>
-              <tr><td>Capital custody</td><td class="dim">COS TRINITY holds</td><td class="yes">You hold always</td></tr>
-              <tr><td>Monthly fee</td><td class="yes">None</td><td class="center">0.5 SOL flat</td></tr>
-              <tr><td>Best for</td><td class="dim">Passive investors</td><td class="dim">Active traders</td></tr>
+              <tr><td>Setup</td><td class="yes">Send SOL only</td><td class="dim">Connect wallet</td><td class="dim" style="text-align:center;">Via agent locally</td></tr>
+              <tr><td>Profit share</td><td class="center">83.7%</td><td class="yes">100%</td><td class="yes">100% to principal</td></tr>
+              <tr><td>Capital custody</td><td class="dim">COS TRINITY holds</td><td class="yes">You hold always</td><td class="yes">Principal holds</td></tr>
+              <tr><td>Monthly fee</td><td class="yes">None</td><td class="center">0.5 SOL</td><td class="center">1 SOL</td></tr>
+              <tr><td>Instance isolation</td><td class="dim">Shared</td><td class="yes">Dedicated</td><td class="yes">Fully airgapped</td></tr>
+              <tr><td>Best for</td><td class="dim">Passive humans</td><td class="dim">Active traders</td><td style="text-align:center;color:var(--gold);">AI agents</td></tr>
             </tbody>
           </table>
         </div>
