@@ -646,6 +646,75 @@
       position: relative; z-index: 1;
     }
 
+    /* ─── MATH CARDS ─── */
+    .math-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 32px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .math-card:hover {
+      border-color: rgba(244,194,79,0.35);
+      transform: translateY(-2px);
+    }
+    .math-label {
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 10px;
+      opacity: 0.85;
+    }
+    .math-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+    .math-formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--purple-lt);
+      background: rgba(102,51,255,0.12);
+      border: 1px solid rgba(102,51,255,0.25);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      word-break: break-all;
+      line-height: 1.6;
+    }
+    .math-vars {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 16px;
+    }
+    .math-vars span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      padding-left: 14px;
+      position: relative;
+    }
+    .math-vars span::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      opacity: 0.6;
+    }
+    .math-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin: 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 14px;
+    }
+
     /* ─── FOOTER ─── */
     footer {
       position: relative; z-index: 1;
@@ -791,6 +860,7 @@
     <a href="#about">About</a>
     <a href="#snipr">SNiPr</a>
     <a href="#plans">Plans</a>
+    <a href="#math">The Math</a>
     <a href="#contact" class="nav-pill">Get Access</a>
   </div>
 </nav>
@@ -1114,6 +1184,161 @@
 <div class="divider"></div>
 
 <!-- ─── CTA ─── -->
+<!-- ─── MATH ENGINE ─── -->
+<section id="math">
+  <div class="section-inner" style="padding-top:100px;padding-bottom:100px;">
+    <p class="section-label">Quantitative Core</p>
+    <h2 class="section-title">THE <span class="gold">MATHEMATICS</span> OF THE TOP 0.4%</h2>
+    <p class="section-sub">SNiPr v5 is built on institutional-grade quant research — the same mathematical foundations used by the world's top algorithmic trading firms, adapted for Solana's bonding curves.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:56px;">
+
+      <!-- Kelly Criterion -->
+      <div class="math-card">
+        <div class="math-label">Position Sizing</div>
+        <div class="math-title">Kelly Criterion</div>
+        <div class="math-formula">f* = (b·p − q) / b</div>
+        <div class="math-vars">
+          <span>f* = optimal bet fraction</span>
+          <span>b = avg_win / avg_loss</span>
+          <span>p = win probability</span>
+        </div>
+        <p class="math-desc">Every position is sized dynamically based on historical edge — not a fixed amount. High-confidence trades get more capital. Low-confidence trades get less. The math maximizes geometric growth while surviving losing streaks.</p>
+      </div>
+
+      <!-- Bayesian Scoring -->
+      <div class="math-card">
+        <div class="math-label">Entry Selection</div>
+        <div class="math-title">Bayesian Inference</div>
+        <div class="math-formula">P(A|B) = P(B|A)·P(A) / P(B)</div>
+        <div class="math-vars">
+          <span>Prior: 5% base rate</span>
+          <span>Signals: dev buy, OBI, whales</span>
+          <span>Gate: P &gt; 18% + EV &gt; 0</span>
+        </div>
+        <p class="math-desc">Every new token gets a posterior probability update using Bayes' theorem. Log-odds from 8 independent signals are combined. Only tokens above the probability threshold and with positive expected value are entered.</p>
+      </div>
+
+      <!-- GARCH -->
+      <div class="math-card">
+        <div class="math-label">Volatility Regime</div>
+        <div class="math-title">GARCH(1,1)</div>
+        <div class="math-formula">σ²_t = ω + α·ε²_{t-1} + β·σ²_{t-1}</div>
+        <div class="math-vars">
+          <span>LOW / MED / HIGH / MELT</span>
+          <span>α = 0.15 (shock weight)</span>
+          <span>β = 0.80 (persistence)</span>
+        </div>
+        <p class="math-desc">Generalized Autoregressive Conditional Heteroskedasticity — the same model used by quant hedge funds. SNiPr detects whether the market is in a calm or explosive regime and adjusts stops, sizing, and entry thresholds accordingly.</p>
+      </div>
+
+      <!-- OBI -->
+      <div class="math-card">
+        <div class="math-label">Market Microstructure</div>
+        <div class="math-title">Order Flow Imbalance</div>
+        <div class="math-formula">OBI = (V_buy − V_sell) / (V_buy + V_sell)</div>
+        <div class="math-vars">
+          <span>Range: −1 (all sells) → +1 (all buys)</span>
+          <span>Entry: OBI &gt; +0.30</span>
+          <span>Exit: OBI &lt; −0.20</span>
+        </div>
+        <p class="math-desc">The same signal used by HFT firms to predict 50–500ms price movements. OBI quantifies buy vs sell pressure in real time. SNiPr enters when buy pressure dominates and exits when distribution begins — before price reflects it.</p>
+      </div>
+
+      <!-- Cornish-Fisher VaR -->
+      <div class="math-card">
+        <div class="math-label">Fat-Tail Risk</div>
+        <div class="math-title">Cornish-Fisher VaR</div>
+        <div class="math-formula">z_CF = z + (z²−1)·s/6 + (z³−3z)·k/24</div>
+        <div class="math-vars">
+          <span>s = skewness (memecoins: −1.5)</span>
+          <span>k = excess kurtosis (~8)</span>
+          <span>Beats normal VaR by 30–50%</span>
+        </div>
+        <p class="math-desc">Standard stop losses assume Gaussian returns. Memecoins have fat tails — extreme moves happen far more often than any normal model predicts. Cornish-Fisher expands the quantile calculation to account for skewness and kurtosis, giving more accurate stop levels.</p>
+      </div>
+
+      <!-- Time-Decay -->
+      <div class="math-card">
+        <div class="math-label">Survival Analysis</div>
+        <div class="math-title">Gompertz Hazard Rate</div>
+        <div class="math-formula">P(dump) = 1 − e^{−λ₀(e^{βt} − 1)/β}</div>
+        <div class="math-vars">
+          <span>Median hold: 100 seconds</span>
+          <span>P(dump @ 5 min) = 87.6%</span>
+          <span>Exit targets decay with time</span>
+        </div>
+        <p class="math-desc">Adapted from biological survival analysis. The probability of a token dumping increases exponentially with time. SNiPr calculates this in real time and reduces take-profit targets accordingly — aiming for 2x in the first minute, not waiting for a 10x that statistically never comes.</p>
+      </div>
+
+      <!-- Monte Carlo -->
+      <div class="math-card">
+        <div class="math-label">Risk Assessment</div>
+        <div class="math-title">Monte Carlo Simulation</div>
+        <div class="math-formula">RoR = ((1−edge)/(1+edge))^{B/r}</div>
+        <div class="math-vars">
+          <span>1,000 trade sequences simulated</span>
+          <span>Halt if RoR &gt; 35%</span>
+          <span>Reduce if RoR &gt; 15%</span>
+        </div>
+        <p class="math-desc">Before every session, SNiPr simulates 1,000 possible sequences of trades using historical win rate, average win, and average loss. If the risk of ruin exceeds safe thresholds, position sizes are automatically reduced. Capital preservation is mathematical — not guesswork.</p>
+      </div>
+
+      <!-- Whale Convergence -->
+      <div class="math-card">
+        <div class="math-label">Smart Money</div>
+        <div class="math-title">Whale Convergence</div>
+        <div class="math-formula">LR = 2^N (per independent whale)</div>
+        <div class="math-vars">
+          <span>Threshold: &gt; 0.3 SOL per buy</span>
+          <span>3 whales → 8× probability boost</span>
+          <span>Independence verified by address</span>
+        </div>
+        <p class="math-desc">When multiple independent large wallets buy the same token within 30 seconds, it signals coordinated conviction from sophisticated traders. Each independent whale buy multiplies the Bayesian probability — because smart money clustering is a measurable on-chain alpha signal.</p>
+      </div>
+
+      <!-- Sortino + Calmar -->
+      <div class="math-card">
+        <div class="math-label">Performance Engine</div>
+        <div class="math-title">Sortino + Calmar</div>
+        <div class="math-formula">Sortino = R̄ / σ_downside &gt; 2.0</div>
+        <div class="math-vars">
+          <span>Sortino: only penalizes losses</span>
+          <span>Calmar = CAGR / MaxDrawdown</span>
+          <span>Circuit breaker if Calmar &lt; 0.5</span>
+        </div>
+        <p class="math-desc">Unlike the Sharpe ratio (which penalizes upside volatility), the Sortino ratio only measures harmful risk. Calmar monitors whether gains outpace drawdowns. If performance degrades below thresholds, SNiPr automatically pauses and alerts — protecting capital in real time.</p>
+      </div>
+
+    </div>
+
+    <!-- Bottom callout -->
+    <div style="margin-top:64px;padding:40px;background:linear-gradient(135deg,rgba(102,51,255,0.12),rgba(244,194,79,0.07));border:1px solid rgba(244,194,79,0.2);border-radius:16px;text-align:center;">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Empirically Calibrated</p>
+      <h3 style="font-size:clamp(22px,3vw,32px);font-weight:800;color:var(--text);margin-bottom:16px;">Built on 3,500,000+ Token Launches</h3>
+      <p style="color:var(--muted);max-width:640px;margin:0 auto 32px;line-height:1.7;">Every parameter in SNiPr is calibrated against real pump.fun data: 100-second median hold times, 1.4% graduation rate, 87.6% dump probability by 5 minutes. This isn't theory — it's math fitted to the actual market.</p>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:32px;">
+        <div style="text-align:center;">
+          <div style="font-size:32px;font-weight:900;color:var(--gold);font-family:'JetBrains Mono',monospace;">100s</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:1px;text-transform:uppercase;">Median Hold</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:32px;font-weight:900;color:var(--gold);font-family:'JetBrains Mono',monospace;">13</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:1px;text-transform:uppercase;">Quant Models</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:32px;font-weight:900;color:var(--gold);font-family:'JetBrains Mono',monospace;">87.6%</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:1px;text-transform:uppercase;">Dump Prob @ 5min</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:32px;font-weight:900;color:var(--gold);font-family:'JetBrains Mono',monospace;">0.4%</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:1px;text-transform:uppercase;">Traders Who Win</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="cta-wrap" id="contact">
   <div class="cta-box">
     <img src="./logo.jpg" style="width:72px;height:72px;display:block;margin:0 auto 28px;object-fit:contain;filter:invert(1) sepia(1) saturate(6) hue-rotate(10deg);" alt="COS TRINITY logo" />
