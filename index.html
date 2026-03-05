@@ -829,7 +829,74 @@
     .comp-table td.yes { color: var(--green); text-align: center; }
     .comp-table td.dim { color: var(--muted); text-align: center; }
 
-    /* ─── RESPONSIVE ─── */
+
+    /* ─── MOBILE OPTIMIZATIONS ─── */
+    @media (max-width: 768px) {
+      nav { padding: 14px 18px; }
+      .nav-links { display: none !important; }
+      .nav-pill { padding: 7px 14px; font-size: 12px; }
+
+      .hero { padding: 100px 18px 60px; }
+      .hero h1 { font-size: clamp(28px, 12vw, 60px); white-space: normal; text-align: center; }
+      .hero-sub { font-size: 15px; }
+      .hero-actions { flex-direction: column; align-items: center; }
+      .hero-actions a { width: 100%; max-width: 320px; justify-content: center; }
+      .hero-stats { flex-direction: column; width: 100%; }
+      .hstat { border-right: none !important; border-bottom: 1px solid var(--border); }
+      .hstat:last-child { border-bottom: none; }
+
+      .section-inner { padding: 60px 18px; }
+      .section-title { font-size: clamp(22px, 6vw, 36px); }
+
+      .about-strip { grid-template-columns: 1fr !important; }
+
+      .snipr-toggle { padding: 18px 20px; }
+      .snipr-toggle-name { font-size: 18px; }
+      .snipr-toggle-sub { font-size: 12px; }
+      .product-status { display: none; }
+
+      .product-header { padding: 24px; }
+      .product-body { padding: 24px; }
+      .feat-grid { grid-template-columns: 1fr !important; }
+
+      .plans-grid { grid-template-columns: 1fr !important; }
+
+      .steps-row { flex-direction: column; gap: 32px; }
+      .steps-row::before { display: none; }
+
+      .cta-box { padding: 40px 20px; }
+
+      .hero-stats { flex-direction: column; }
+
+      footer { padding: 32px 18px 20px; }
+      .footer-row { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .footer-links { gap: 16px; flex-wrap: wrap; }
+
+      /* ELI5 dropdowns — single column on mobile */
+      #explained .section-inner > div > div[style*="grid-template-columns:1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+      }
+
+      /* Math cards */
+      #math .section-inner > div { grid-template-columns: 1fr !important; }
+
+      /* Ticker */
+      .ticker-track { animation-duration: 12s; }
+
+      /* Plan cards comparison table */
+      .comp-table { font-size: 12px; }
+      .comp-table th, .comp-table td { padding: 10px 12px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 { font-size: clamp(24px, 11vw, 44px); }
+      .btn-purple, .btn-outline, .btn-tg { font-size: 13px; padding: 12px 20px; }
+      .plan-card { padding: 24px 20px; }
+      .snipr-toggle { padding: 16px; gap: 12px; }
+      .snipr-toggle-name { font-size: 16px; }
+    }
+
+    /* ─── RESPONSIVE (legacy) ─── */
     @media (max-width: 900px) {
       nav { padding: 14px 20px; }
       .nav-links { display: none; }
@@ -964,122 +1031,113 @@
   <div class="section-inner" style="padding-top:80px;padding-bottom:80px;">
     <p class="section-label">Wait... what does it actually do?</p>
     <h2 class="section-title">EXPLAINED LIKE YOU'RE <span class="accent">NOT</span> A CRYPTO NERD</h2>
-    <p class="section-sub">Real talk. No jargon. Here's what we actually built and why it matters to you.</p>
+    <p class="section-sub">Real talk. No jargon. Tap either product to understand it in plain English.</p>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;max-width:1000px;margin:0 auto;">
+    <div style="display:flex;flex-direction:column;gap:16px;max-width:900px;margin:0 auto;">
 
-      <!-- SNiPr ELI5 -->
-      <div style="background:var(--card);border:1px solid rgba(244,194,79,0.25);border-radius:24px;overflow:hidden;">
-        <div style="background:linear-gradient(135deg,rgba(244,194,79,0.12),rgba(139,92,246,0.08));padding:32px;border-bottom:1px solid rgba(244,194,79,0.15);">
-          <div style="font-size:36px;margin-bottom:10px;">⚡</div>
-          <div style="font-size:22px;font-weight:900;color:var(--gold);letter-spacing:0.05em;">SNiPr</div>
-          <div style="font-size:13px;color:var(--muted);margin-top:4px;">For people who want to make money from crypto without staring at charts all day</div>
+      <!-- SNiPr ELI5 Dropdown -->
+      <button class="snipr-toggle" style="border-color:rgba(244,194,79,0.35);" onclick="toggleEli5Snipr(this)" aria-expanded="false">
+        <div class="snipr-toggle-left">
+          <div style="width:44px;height:44px;background:rgba(244,194,79,0.1);border:2px solid rgba(244,194,79,0.4);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">⚡</div>
+          <div>
+            <div class="snipr-toggle-name" style="color:var(--gold);">SNiPr — in plain English</div>
+            <div class="snipr-toggle-sub">A robot that makes money from crypto while you sleep — tap to learn how</div>
+          </div>
         </div>
-        <div style="padding:32px;">
+        <svg class="snipr-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
 
-          <div style="margin-bottom:24px;">
-            <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">🤔 The Simple Version</div>
-            <p style="font-size:15px;color:var(--text);line-height:1.8;">New crypto coins get created on Solana every few seconds. Most are trash. A tiny few go up 10x, 50x, 100x in the first few minutes. SNiPr is a robot that watches every single new coin 24/7, filters out the scams automatically, and buys the good ones <em>before the crowd even notices them.</em></p>
-          </div>
+      <div class="snipr-body" id="eli5SniprBody">
+        <div style="background:var(--card);border:1px solid rgba(244,194,79,0.2);border-radius:0 0 20px 20px;padding:32px 36px;">
 
-          <div style="margin-bottom:24px;">
-            <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">📺 Think of it like...</div>
-            <p style="font-size:15px;color:var(--text);line-height:1.8;">Imagine if you had a friend who never sleeps, watches thousands of stocks every second, and calls you the moment a good one appears — already bought in on your behalf. That's SNiPr, but for Solana crypto tokens.</p>
-          </div>
-
-          <div style="margin-bottom:28px;">
-            <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">✅ What you actually do</div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div style="display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--text);line-height:1.6;">
-                <span style="color:var(--gold);font-weight:700;flex-shrink:0;">1.</span>
-                <span>Send some SOL (minimum 0.5 — about $80 today)</span>
-              </div>
-              <div style="display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--text);line-height:1.6;">
-                <span style="color:var(--gold);font-weight:700;flex-shrink:0;">2.</span>
-                <span>Tell us where to send your profits (just a wallet address)</span>
-              </div>
-              <div style="display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--text);line-height:1.6;">
-                <span style="color:var(--gold);font-weight:700;flex-shrink:0;">3.</span>
-                <span>SNiPr trades for you. Every week, 83.7% of the profits land in your wallet.</span>
-              </div>
-              <div style="display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--text);line-height:1.6;">
-                <span style="color:var(--gold);font-weight:700;flex-shrink:0;">4.</span>
-                <span>You do nothing. It runs 24/7. You get Telegram updates when trades happen.</span>
-              </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;">
+            <div>
+              <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">🤔 What is it?</div>
+              <p style="font-size:15px;color:var(--text);line-height:1.8;">New crypto coins get created every few seconds on Solana. Most are scams. A tiny few explode 10x, 50x, 100x in the first few minutes. SNiPr is a robot that watches every single new coin, filters out the garbage automatically, and buys the promising ones <em>before the crowd even sees them.</em></p>
+            </div>
+            <div>
+              <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">📺 Think of it like...</div>
+              <p style="font-size:15px;color:var(--text);line-height:1.8;">A friend who never sleeps, watches thousands of coins every second, and has already bought in for you by the time you even hear about it. Except this friend uses math, not gut feelings.</p>
             </div>
           </div>
 
-          <div style="background:rgba(244,194,79,0.07);border:1px solid rgba(244,194,79,0.2);border-radius:12px;padding:18px;margin-bottom:24px;">
-            <div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;">The honest part</div>
-            <p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0;">Crypto is risky. SNiPr doesn't guarantee profits — no one can. What it does is apply serious math and speed to give you a real edge. We only take a cut when <em>you</em> make money.</p>
-          </div>
-
-          <a href="#contact" class="plan-btn plan-btn-gold" style="display:block;text-align:center;text-decoration:none;padding:14px;border-radius:10px;font-weight:700;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;">Start with 0.5 SOL →</a>
-        </div>
-      </div>
-
-      <!-- VIGIL ELI5 -->
-      <div style="background:var(--card);border:1px solid rgba(45,212,191,0.25);border-radius:24px;overflow:hidden;">
-        <div style="background:linear-gradient(135deg,rgba(45,212,191,0.1),rgba(139,92,246,0.08));padding:32px;border-bottom:1px solid rgba(45,212,191,0.15);">
-          <div style="font-size:36px;margin-bottom:10px;">🔱</div>
-          <div style="font-size:22px;font-weight:900;color:#2dd4bf;letter-spacing:0.05em;">VIGIL</div>
-          <div style="font-size:13px;color:var(--muted);margin-top:4px;">For developers and businesses running AI robots that handle money</div>
-        </div>
-        <div style="padding:32px;">
-
-          <div style="margin-bottom:24px;">
-            <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#2dd4bf;margin-bottom:10px;">🤔 The Simple Version</div>
-            <p style="font-size:15px;color:var(--text);line-height:1.8;">AI robots are now handling real money — trading, transferring, investing — all on their own. The problem? Nobody can see what they're doing. VIGIL is like a security camera + dashboard for your AI robot. Every action it takes, every dollar it spends, every mistake it makes — you see it in real time.</p>
-          </div>
-
-          <div style="margin-bottom:24px;">
-            <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#2dd4bf;margin-bottom:10px;">📺 Think of it like...</div>
-            <p style="font-size:15px;color:var(--text);line-height:1.8;">Imagine you hired someone to manage your money but you could never check what they were doing — no receipts, no statements, nothing. Terrifying, right? VIGIL is the receipt printer, the bank statement, and the security alarm for your AI money manager.</p>
-          </div>
-
-          <div style="margin-bottom:28px;">
-            <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#2dd4bf;margin-bottom:12px;">✅ Who actually needs this</div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div style="display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--text);line-height:1.6;">
-                <span style="color:#2dd4bf;font-weight:700;flex-shrink:0;">→</span>
-                <span>Developers building AI trading bots who need to know what went wrong</span>
-              </div>
-              <div style="display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--text);line-height:1.6;">
-                <span style="color:#2dd4bf;font-weight:700;flex-shrink:0;">→</span>
-                <span>Businesses with AI agents spending company money on autopilot</span>
-              </div>
-              <div style="display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--text);line-height:1.6;">
-                <span style="color:#2dd4bf;font-weight:700;flex-shrink:0;">→</span>
-                <span>Anyone who wants alerts before their robot does something dumb with their money</span>
-              </div>
-              <div style="display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--text);line-height:1.6;">
-                <span style="color:#2dd4bf;font-weight:700;flex-shrink:0;">→</span>
-                <span>Teams that need to prove their AI is behaving (for clients, investors, regulators)</span>
-              </div>
+          <div style="background:rgba(244,194,79,0.06);border:1px solid rgba(244,194,79,0.15);border-radius:14px;padding:24px;margin-bottom:24px;">
+            <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;">✅ What you actually do (4 steps)</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div style="display:flex;gap:12px;align-items:flex-start;font-size:14px;color:var(--text);line-height:1.6;"><span style="color:var(--gold);font-weight:800;font-size:16px;flex-shrink:0;">1</span><span>Send some SOL (minimum ~$80 worth)</span></div>
+              <div style="display:flex;gap:12px;align-items:flex-start;font-size:14px;color:var(--text);line-height:1.6;"><span style="color:var(--gold);font-weight:800;font-size:16px;flex-shrink:0;">2</span><span>Give us a wallet address to send profits to</span></div>
+              <div style="display:flex;gap:12px;align-items:flex-start;font-size:14px;color:var(--text);line-height:1.6;"><span style="color:var(--gold);font-weight:800;font-size:16px;flex-shrink:0;">3</span><span>SNiPr trades for you — 24 hours a day, 7 days a week</span></div>
+              <div style="display:flex;gap:12px;align-items:flex-start;font-size:14px;color:var(--text);line-height:1.6;"><span style="color:var(--gold);font-weight:800;font-size:16px;flex-shrink:0;">4</span><span>Every week, 83.7% of profits land in your wallet automatically</span></div>
             </div>
           </div>
 
-          <div style="background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.2);border-radius:12px;padding:18px;margin-bottom:24px;">
-            <div style="font-size:12px;font-weight:700;color:#2dd4bf;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;">The free part</div>
-            <p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0;">VIGIL starts completely free. One AI agent, real-time monitoring, no credit card. You only pay when you need more.</p>
+          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:16px 20px;margin-bottom:24px;font-size:13px;color:var(--muted);line-height:1.7;">
+            <strong style="color:var(--text);">The honest part:</strong> Crypto is risky and no one can guarantee profits. SNiPr uses real math to get you in early and out fast — but losses happen. We only take a cut when <em>you</em> make money.
           </div>
 
-          <a href="https://vigil.costrinity.xyz" target="_blank" style="display:block;text-align:center;text-decoration:none;padding:14px;border-radius:10px;font-weight:700;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff;">Try VIGIL Free →</a>
+          <div style="text-align:center;">
+            <a href="#contact" class="plan-btn plan-btn-gold" style="display:inline-block;text-decoration:none;padding:14px 40px;border-radius:10px;font-weight:700;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;">Start with 0.5 SOL →</a>
+          </div>
         </div>
       </div>
 
-    </div>
+      <!-- VIGIL ELI5 Dropdown -->
+      <button class="snipr-toggle" style="border-color:rgba(45,212,191,0.35);" onclick="toggleEli5Vigil(this)" aria-expanded="false">
+        <div class="snipr-toggle-left">
+          <div style="width:44px;height:44px;background:rgba(45,212,191,0.1);border:2px solid rgba(45,212,191,0.4);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🔱</div>
+          <div>
+            <div class="snipr-toggle-name" style="color:#2dd4bf;">VIGIL — in plain English</div>
+            <div class="snipr-toggle-sub">A security camera for AI robots that handle money — tap to learn how</div>
+          </div>
+        </div>
+        <svg class="snipr-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </button>
 
-    <!-- Bottom callout for normal people -->
-    <div style="max-width:700px;margin:48px auto 0;text-align:center;background:rgba(139,92,246,0.06);border:1px solid var(--border);border-radius:20px;padding:40px 36px;">
-      <div style="font-size:28px;margin-bottom:16px;">👋</div>
-      <h3 style="font-size:20px;font-weight:800;margin-bottom:12px;">Not a developer? Still curious?</h3>
-      <p style="font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:24px;">You don't need to understand any of the tech. If you've ever wished you could make money from crypto without learning how it all works — SNiPr is built for you. Message us on Telegram and we'll explain everything in plain English.</p>
-      <a href="https://t.me/ob_mikii" target="_blank" class="btn-tg" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#229ED9,#1a85b8);color:#fff;font-weight:700;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;padding:14px 32px;border-radius:8px;text-decoration:none;">
-        💬 Ask Us Anything
-      </a>
-    </div>
+      <div class="snipr-body" id="eli5VigilBody">
+        <div style="background:var(--card);border:1px solid rgba(45,212,191,0.2);border-radius:0 0 20px 20px;padding:32px 36px;">
 
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;">
+            <div>
+              <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#2dd4bf;margin-bottom:10px;">🤔 What is it?</div>
+              <p style="font-size:15px;color:var(--text);line-height:1.8;">AI robots are now managing real money — trading, sending, investing — all on their own. The problem? Nobody can see what they're doing. VIGIL is a real-time dashboard that shows you every action your AI takes, every dollar it spends, and alerts you the moment something goes wrong.</p>
+            </div>
+            <div>
+              <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#2dd4bf;margin-bottom:10px;">📺 Think of it like...</div>
+              <p style="font-size:15px;color:var(--text);line-height:1.8;">Imagine hiring someone to manage your money but having zero receipts, no statements, no way to check. Terrifying, right? VIGIL is the receipt printer, the bank statement, and the smoke alarm — all in one dashboard.</p>
+            </div>
+          </div>
+
+          <div style="background:rgba(45,212,191,0.05);border:1px solid rgba(45,212,191,0.15);border-radius:14px;padding:24px;margin-bottom:24px;">
+            <div style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#2dd4bf;margin-bottom:14px;">✅ Who needs this</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;gap:12px;font-size:14px;color:var(--text);line-height:1.6;"><span style="color:#2dd4bf;font-weight:700;flex-shrink:0;">→</span><span>Developers building AI trading bots who want to know what broke</span></div>
+              <div style="display:flex;gap:12px;font-size:14px;color:var(--text);line-height:1.6;"><span style="color:#2dd4bf;font-weight:700;flex-shrink:0;">→</span><span>Businesses with AI agents spending company money on autopilot</span></div>
+              <div style="display:flex;gap:12px;font-size:14px;color:var(--text);line-height:1.6;"><span style="color:#2dd4bf;font-weight:700;flex-shrink:0;">→</span><span>Anyone who wants an alarm before their robot does something expensive and dumb</span></div>
+              <div style="display:flex;gap:12px;font-size:14px;color:var(--text);line-height:1.6;"><span style="color:#2dd4bf;font-weight:700;flex-shrink:0;">→</span><span>Teams that need to prove to clients their AI is actually behaving</span></div>
+            </div>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:16px 20px;margin-bottom:24px;font-size:13px;color:var(--muted);line-height:1.7;">
+            <strong style="color:var(--text);">Starts completely free:</strong> One AI agent, real-time monitoring, no credit card needed. You only pay when you need more agents or longer history.
+          </div>
+
+          <div style="text-align:center;">
+            <a href="https://vigil.costrinity.xyz" target="_blank" style="display:inline-block;text-decoration:none;padding:14px 40px;border-radius:10px;font-weight:700;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff;">Try VIGIL Free →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Normal people callout -->
+      <div style="text-align:center;background:rgba(139,92,246,0.06);border:1px solid var(--border);border-radius:20px;padding:36px 28px;margin-top:8px;">
+        <div style="font-size:24px;margin-bottom:12px;">👋</div>
+        <h3 style="font-size:18px;font-weight:800;margin-bottom:10px;">Still confused? Just ask.</h3>
+        <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:20px;max-width:500px;margin-left:auto;margin-right:auto;">You don't need to understand any of the tech. Message us on Telegram and we'll explain everything in plain English — no pressure, no pitch.</p>
+        <a href="https://t.me/ob_mikii" target="_blank" class="btn-tg" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#229ED9,#1a85b8);color:#fff;font-weight:700;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;padding:12px 28px;border-radius:8px;text-decoration:none;">
+          💬 Ask Us Anything
+        </a>
+      </div>
+
+    </div>
   </div>
 </section>
 
@@ -1706,6 +1764,22 @@
 </footer>
 
 <script>
+function toggleEli5Snipr(btn) {
+  var body = document.getElementById('eli5SniprBody');
+  var chevron = btn.querySelector('.snipr-chevron');
+  var isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chevron.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+function toggleEli5Vigil(btn) {
+  var body = document.getElementById('eli5VigilBody');
+  var chevron = btn.querySelector('.snipr-chevron');
+  var isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chevron.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
 function toggleVigil(btn) {
   const body = document.getElementById('vigilBody');
   const chevron = btn.querySelector('.snipr-chevron');
