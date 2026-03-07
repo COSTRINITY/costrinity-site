@@ -908,11 +908,62 @@
       .hero-stats { flex-direction: column; }
       .hstat { border-right: none; border-bottom: 1px solid var(--border); }
       .hstat:last-child { border-bottom: none; }
+      .nav-hamburger { display: block !important; }
     }
     @media (max-width: 600px) {
       .cta-box { padding: 48px 24px; }
       footer { padding: 32px 20px 20px; }
     }
+
+    /* ─── HAMBURGER + MOBILE MENU ─── */
+    .nav-hamburger {
+      display: none;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 13px;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 20px;
+      line-height: 1;
+    }
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 200;
+      background: rgba(6,6,26,0.98);
+      backdrop-filter: blur(20px);
+      padding: 80px 32px 40px;
+      flex-direction: column;
+      gap: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .mobile-menu-close {
+      position: absolute;
+      top: 20px; right: 20px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 13px;
+      color: var(--text);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .mobile-menu a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 700;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: 0.04em;
+      display: block;
+    }
+    .mobile-menu a:last-child { border-bottom: none; margin-top: 16px; }
+    .mobile-menu.open { display: flex; }
+    body.menu-open { overflow: hidden; }
   </style>
 </head>
 <body>
@@ -932,7 +983,33 @@
     <a href="#math">The Math</a>
     <a href="#contact" class="nav-pill">Get Access</a>
   </div>
+  <button class="nav-hamburger" onclick="openMenu()" aria-label="Open menu">☰</button>
 </nav>
+
+<!-- ─── MOBILE FULLSCREEN MENU ─── -->
+<div class="mobile-menu" id="mobile-menu">
+  <button class="mobile-menu-close" onclick="closeMenu()" aria-label="Close menu">✕</button>
+  <a href="#about" onclick="closeMenu()">About</a>
+  <a href="#explained" onclick="closeMenu()">How It Works</a>
+  <a href="#snipr" onclick="closeMenu()">SNiPr</a>
+  <a href="#plans" onclick="closeMenu()">Plans</a>
+  <a href="#vigil" onclick="closeMenu()">VIGIL</a>
+  <a href="#math" onclick="closeMenu()">The Math</a>
+  <a href="#contact" onclick="closeMenu()" style="color:var(--purple-lt);border-top:1px solid var(--border-glow);">🔱 Get Access</a>
+</div>
+
+<script>
+  function openMenu() {
+    document.getElementById('mobile-menu').classList.add('open');
+    document.body.classList.add('menu-open');
+  }
+  function closeMenu() {
+    document.getElementById('mobile-menu').classList.remove('open');
+    document.body.classList.remove('menu-open');
+  }
+  // Close on back navigation
+  window.addEventListener('hashchange', closeMenu);
+</script>
 
 <!-- ─── TICKER ─── -->
 <div class="ticker-wrap">
