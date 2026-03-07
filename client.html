@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNiPr Client Portal — COS TRINITY</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --bg2: #111827;
+      --bg3: #1a2235;
+      --text: #f1f5f9;
+      --muted: #64748b;
+      --teal: #2dd4bf;
+      --green: #4ade80;
+      --red: #f87171;
+      --gold: #f4c24f;
+      --border: rgba(255,255,255,0.08);
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── TOPBAR ─── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .topbar-brand .logo-mark {
+      font-size: 22px;
+      line-height: 1;
+    }
+    .topbar-brand .brand-text {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .topbar-brand .brand-text em {
+      color: var(--gold);
+      font-style: normal;
+    }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .wallet-badge {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+    .btn-signout {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-signout:hover { color: var(--red); border-color: var(--red); }
+
+    /* ─── MAIN LAYOUT ─── */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 48px 24px;
+    }
+
+    /* ─── LOGIN SCREEN ─── */
+    .login-wrap {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+    .login-logo {
+      font-size: 52px;
+      margin-bottom: 20px;
+      line-height: 1;
+      filter: drop-shadow(0 0 20px rgba(45,212,191,0.3));
+    }
+    .login-title {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .login-title span { color: var(--teal); }
+    .login-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+    .login-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .input-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-align: left;
+      display: block;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .wallet-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .wallet-input::placeholder { color: var(--muted); }
+    .wallet-input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(45,212,191,0.12);
+    }
+    .wallet-input.error { border-color: var(--red); }
+    .error-msg {
+      font-size: 12px;
+      color: var(--red);
+      text-align: left;
+      margin-top: 6px;
+      display: none;
+    }
+    .btn-access {
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      background: var(--teal);
+      color: #0b0f1a;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-access:hover { opacity: 0.9; }
+    .btn-access:active { transform: scale(0.98); }
+    .login-hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+    .login-hint a { color: var(--teal); text-decoration: none; }
+    .login-hint a:hover { text-decoration: underline; }
+
+    /* ─── DASHBOARD ─── */
+    .dashboard {
+      width: 100%;
+      max-width: 820px;
+    }
+    .dash-welcome {
+      margin-bottom: 28px;
+    }
+    .dash-welcome h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+    .dash-welcome h1 span { color: var(--teal); }
+    .dash-welcome p {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* stat cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 680px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 360px) { .stats-grid { grid-template-columns: 1fr; } }
+
+    .stat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 16px;
+    }
+    .stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .stat-value.green { color: var(--green); }
+    .stat-value.gold  { color: var(--gold); }
+
+    /* status badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 8px 16px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+
+    /* trades table */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .trades-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    tbody td {
+      padding: 13px 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .token-name { font-weight: 700; color: var(--text); font-family: var(--mono); }
+    .result-win { color: var(--green); font-weight: 700; }
+    .result-loss { color: var(--red); font-weight: 700; }
+    .pnl-pos { color: var(--green); }
+    .pnl-neg { color: var(--red); }
+    .time-cell { color: var(--muted); }
+
+    /* info cards */
+    .info-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 540px) { .info-row { grid-template-columns: 1fr; } }
+    .info-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+    .info-card .ic-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .info-card .ic-value {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .info-card .ic-value a {
+      color: var(--teal);
+      text-decoration: none;
+    }
+    .info-card .ic-value a:hover { text-decoration: underline; }
+    .info-card .ic-value .gold { color: var(--gold); }
+
+    /* disclaimer */
+    .disclaimer {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      opacity: 0.7;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 11px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--teal); text-decoration: none; }
+
+    /* ─── HIDDEN UTIL ─── */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- ─── TOPBAR ─── -->
+<header class="topbar">
+  <a href="/" class="topbar-brand">
+    <span class="logo-mark">🔱</span>
+    <span class="brand-text">COS <em>TRINITY</em></span>
+  </a>
+  <div class="topbar-right" id="topbar-auth" style="display:none;">
+    <span class="wallet-badge" id="topbar-wallet"></span>
+    <button class="btn-signout" onclick="signOut()">Sign Out</button>
+  </div>
+</header>
+
+<!-- ─── MAIN ─── -->
+<main>
+
+  <!-- LOGIN SCREEN -->
+  <div class="login-wrap" id="login-screen">
+    <div class="login-logo">🔱</div>
+    <h1 class="login-title"><span>SNiPr</span> Client Portal</h1>
+    <p class="login-sub">Your live account dashboard — check balance,<br>PnL, and recent trades.</p>
+
+    <div class="login-card">
+      <label class="input-label" for="wallet-input">Your Wallet Address</label>
+      <input
+        class="wallet-input"
+        id="wallet-input"
+        type="text"
+        placeholder="e.g. 5b1aWKHyS1JVuK9g9wWx..."
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+      />
+      <div class="error-msg" id="error-msg">Please enter a valid Solana wallet address (32–44 characters).</div>
+      <button class="btn-access" onclick="doLogin()">Access Portal →</button>
+      <p class="login-hint">
+        Enter the wallet address you used to deposit.<br>
+        Not a client yet? <a href="/#contact">Get access →</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="dashboard hidden" id="dashboard">
+
+    <div class="dash-welcome">
+      <h1>Welcome back, <span id="wallet-display"></span></h1>
+      <p id="dash-sub">SNiPr Managed Plan · Auto-trading active</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Deposited</div>
+        <div class="stat-value">0.50 <small style="font-size:14px;color:var(--muted)">SOL</small></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Current Balance</div>
+        <div class="stat-value gold">0.612 <small style="font-size:14px;color:var(--muted)">SOL</small></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Profit</div>
+        <div class="stat-value green">+0.112 <small style="font-size:14px;color:var(--muted)">SOL</small></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Win Rate</div>
+        <div class="stat-value green">71<small style="font-size:14px">%</small></div>
+      </div>
+    </div>
+
+    <div class="status-badge">🟢 ACTIVE — Trading in progress</div>
+
+    <p class="section-label">Recent Trades</p>
+    <div class="trades-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Token</th>
+            <th>Result</th>
+            <th>PnL</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="token-name">BONK</td>
+            <td class="result-win">✅ WIN</td>
+            <td class="pnl-pos">+0.024 SOL <span style="color:var(--muted)">(+142%)</span></td>
+            <td class="time-cell">2h ago</td>
+          </tr>
+          <tr>
+            <td class="token-name" style="color:var(--muted)">???</td>
+            <td class="result-loss">❌ LOSS</td>
+            <td class="pnl-neg">-0.008 SOL <span style="color:var(--muted)">(-18%)</span></td>
+            <td class="time-cell">5h ago</td>
+          </tr>
+          <tr>
+            <td class="token-name">MEW</td>
+            <td class="result-win">✅ WIN</td>
+            <td class="pnl-pos">+0.031 SOL <span style="color:var(--muted)">(+87%)</span></td>
+            <td class="time-cell">8h ago</td>
+          </tr>
+          <tr>
+            <td class="token-name">POPCAT</td>
+            <td class="result-win">✅ WIN</td>
+            <td class="pnl-pos">+0.019 SOL <span style="color:var(--muted)">(+52%)</span></td>
+            <td class="time-cell">12h ago</td>
+          </tr>
+          <tr>
+            <td class="token-name">SLERF</td>
+            <td class="result-loss">❌ LOSS</td>
+            <td class="pnl-neg">-0.006 SOL <span style="color:var(--muted)">(-14%)</span></td>
+            <td class="time-cell">1d ago</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-row">
+      <div class="info-card">
+        <div class="ic-label">⏰ Next Settlement</div>
+        <div class="ic-value">
+          <span class="gold">Friday</span> — Profits paid to your wallet automatically.<br>
+          <span style="font-size:11px;color:var(--muted)">16.3% performance fee deducted at settlement.</span>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="ic-label">💬 Support</div>
+        <div class="ic-value">
+          Questions? Message <a href="https://t.me/ob_mikii" target="_blank" rel="noopener">@ob_mikii on Telegram →</a><br>
+          <span style="font-size:11px;color:var(--muted)">Response within a few hours.</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="disclaimer">⚠️ Demo data shown — live wallet integration coming soon. Stats above are illustrative only.</p>
+
+  </div>
+</main>
+
+<footer>
+  <a href="/">← Back to costrinity.xyz</a> &nbsp;·&nbsp; SNiPr Client Portal &nbsp;·&nbsp; 🔱 COS TRINITY
+</footer>
+
+<script>
+  const STORAGE_KEY = 'snipr_wallet';
+
+  function truncate(addr) {
+    if (!addr || addr.length < 10) return addr;
+    return addr.slice(0, 6) + '...' + addr.slice(-4);
+  }
+
+  function isValidWallet(addr) {
+    // Base58: alphanumeric excl 0OIl, 32-44 chars
+    return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(addr.trim());
+  }
+
+  function showDashboard(wallet) {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    document.getElementById('topbar-auth').style.display = 'flex';
+    document.getElementById('topbar-wallet').textContent = truncate(wallet);
+    document.getElementById('wallet-display').textContent = truncate(wallet);
+  }
+
+  function showLogin() {
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('dashboard').classList.add('hidden');
+    document.getElementById('topbar-auth').style.display = 'none';
+  }
+
+  function doLogin() {
+    const input = document.getElementById('wallet-input');
+    const errMsg = document.getElementById('error-msg');
+    const wallet = input.value.trim();
+
+    if (!isValidWallet(wallet)) {
+      input.classList.add('error');
+      errMsg.style.display = 'block';
+      input.focus();
+      return;
+    }
+
+    input.classList.remove('error');
+    errMsg.style.display = 'none';
+    localStorage.setItem(STORAGE_KEY, wallet);
+    showDashboard(wallet);
+  }
+
+  function signOut() {
+    localStorage.removeItem(STORAGE_KEY);
+    document.getElementById('wallet-input').value = '';
+    showLogin();
+  }
+
+  // Allow Enter key on input
+  document.getElementById('wallet-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  // On load: check localStorage
+  (function init() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved && isValidWallet(saved)) {
+      showDashboard(saved);
+    }
+  })();
+</script>
+</body>
+</html>
