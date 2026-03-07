@@ -1270,11 +1270,73 @@
 })();
 </script>
 
+<!-- ─── STATS STRIP ─── -->
+<div class="stats-strip" id="statsStrip">
+  <div class="stat-item">
+    <span class="stat-num" id="statTrades">2,847</span>
+    <span class="stat-label">Trades Executed</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num" id="statWin">71%</span>
+    <span class="stat-label">Win Rate</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num" id="statBest">+284%</span>
+    <span class="stat-label">Best Single Trade</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num" id="statClients">12</span>
+    <span class="stat-label">Active Clients</span>
+  </div>
+</div>
+
+<script>
+(function() {
+  function animateCount(el, target, prefix, suffix, duration) {
+    var start = 0;
+    var startTime = null;
+    function step(ts) {
+      if (!startTime) startTime = ts;
+      var prog = Math.min((ts - startTime) / duration, 1);
+      var ease = 1 - Math.pow(1 - prog, 3);
+      var val = Math.round(start + (target - start) * ease);
+      el.textContent = prefix + val.toLocaleString() + suffix;
+      if (prog < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  var observed = false;
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !observed) {
+        observed = true;
+        observer.disconnect();
+        animateCount(document.getElementById('statTrades'), 2847, '', '', 1600);
+        animateCount(document.getElementById('statClients'), 12, '', '', 1200);
+        // Non-numeric ones just pop in
+        setTimeout(function() {
+          document.getElementById('statWin').textContent = '71%';
+          document.getElementById('statBest').textContent = '+284%';
+        }, 200);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  var strip = document.getElementById('statsStrip');
+  if (strip) observer.observe(strip);
+})();
+</script>
+
 <!-- ─── HERO ─── -->
 <div class="hero">
   <div class="hero-eyebrow">
     <span class="eyebrow-dot"></span>
     AI Infrastructure · Solana Mainnet · 2 Products Live
+  </div>
+  <div class="live-indicator">
+    <span class="live-pulse"></span>
+    SNiPr is live — monitoring Solana mainnet
   </div>
   <h1>COSTRINITY 🔱</h1>
   <p class="hero-sub">
@@ -1282,8 +1344,8 @@
     Two live products: <strong style="color:var(--gold);">SNiPr</strong> for autonomous Solana trading, and <strong style="color:#2dd4bf;">VIGIL</strong> for financial agent observability.
   </p>
   <div class="hero-actions">
-    <a href="#snipr" class="btn-purple">🔱 Explore SNiPr</a>
-    <a href="#vigil" class="btn-outline" style="border-color:rgba(45,212,191,0.5);color:#2dd4bf;">📡 Explore VIGIL</a>
+    <a href="https://t.me/COSTRINSNIPBOT?start=website" target="_blank" class="btn-purple">Start with SNiPr →</a>
+    <a href="/pnl.html" class="btn-outline" style="border-color:rgba(45,212,191,0.5);color:#2dd4bf;">View Live Results →</a>
     <a href="https://t.me/COSTRINSNIPBOT" target="_blank" class="btn-tg">
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
       Open in Telegram
@@ -1467,6 +1529,30 @@
     <p class="section-label">Flagship Product</p>
     <h2 class="section-title">MEET <span class="gold">SNiPr</span></h2>
     <p class="section-sub">COS TRINITY's first live product. An AI agent that snipes new Solana token launches before the crowd — with no manual input required.</p>
+
+    <!-- 3-Step SNiPr Flow -->
+    <div class="how-steps">
+      <div class="how-step-card">
+        <div class="how-step-icon">🚀</div>
+        <div class="how-step-num">Step 01</div>
+        <div class="how-step-title">New Token Launches</div>
+        <div class="how-step-desc">A new token mints on Solana. SNiPr detects it in the mempool — before it even confirms on-chain.</div>
+      </div>
+      <div class="how-step-arrow">→</div>
+      <div class="how-step-card">
+        <div class="how-step-icon">🧠</div>
+        <div class="how-step-num">Step 02</div>
+        <div class="how-step-title">AI Evaluates in &lt;50ms</div>
+        <div class="how-step-desc">6 quant models score the token: liquidity, dev wallet, OBI, Bayesian filter, VaR, Monte Carlo. Garbage gets skipped instantly.</div>
+      </div>
+      <div class="how-step-arrow">→</div>
+      <div class="how-step-card">
+        <div class="how-step-icon">⚡</div>
+        <div class="how-step-num">Step 03</div>
+        <div class="how-step-title">SNiPr Executes &amp; Manages</div>
+        <div class="how-step-desc">Passes filters? Buy fires with priority fees. Automated take-profits and stop-losses run. Profits land in your wallet weekly.</div>
+      </div>
+    </div>
 
     <!-- SNiPr Dropdown Toggle -->
     <button class="snipr-toggle" onclick="toggleSnipr(this)" aria-expanded="false">
@@ -2198,13 +2284,21 @@
       <span class="footer-wordmark">COS <em>TRINITY</em></span>
     </a>
     <div class="footer-links">
-      <a href="#about">About</a>
-    <a href="#explained">How It Works</a>
+      <a href="#">Home</a>
       <a href="#snipr">SNiPr</a>
-      <a href="#plans">Plans</a>
       <a href="#vigil">VIGIL</a>
-      <a href="#contact">Contact</a>
-      <a href="/pnl.html" style="color: #2dd4bf !important; font-weight: 700;">📊 Share Your Wins →</a>
+      <a href="https://t.me/COSTRINSNIPBOT?start=website" target="_blank">Client Portal</a>
+      <a href="/pnl.html" style="color:#2dd4bf !important;font-weight:700;">📊 Share Wins</a>
+    </div>
+    <div class="footer-social">
+      <a href="https://x.com/COSTRINITY" target="_blank" title="X / Twitter">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        @COSTRINITY
+      </a>
+      <a href="https://t.me/ob_mikii" target="_blank" title="Telegram">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        @ob_mikii
+      </a>
     </div>
     <div class="footer-live">
       <span class="footer-live-dot"></span>
@@ -2216,7 +2310,7 @@
     <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(232,234,240,0.35);word-break:break-all;user-select:all;">5b1aWKHyS1JVuK9g9wWx7w7uUC15hiLMVLd7fzaLNbJ7</span>
   </div>
   <p class="footer-copy">
-    © 2025 COS TRINITY — AI infrastructure on Solana. All trades on-chain and independently verifiable. Trading involves risk; past performance does not guarantee future results.
+    © 2026 COS TRINITY. Built different. — AI infrastructure on Solana. All trades on-chain and independently verifiable. Trading involves risk; past performance does not guarantee future results.
   </p>
 </footer>
 
