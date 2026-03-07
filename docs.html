@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Developer Docs — COS TRINITY</title>
+  <meta name="description" content="COS TRINITY API documentation — SNiPr evaluation API, VIGIL observability SDK, ElizaOS plugin." />
+  <style>
+    :root {
+      --bg:     #0b0f1a;
+      --bg2:    #111827;
+      --card:   #0f172a;
+      --text:   #f1f5f9;
+      --muted:  #64748b;
+      --dim:    #334155;
+      --teal:   #2dd4bf;
+      --green:  #4ade80;
+      --red:    #f87171;
+      --gold:   #f4c24f;
+      --border: rgba(255,255,255,0.08);
+      --mono:   'JetBrains Mono', 'Fira Code', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.6; }
+
+    /* Layout */
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar {
+      width: 260px; flex-shrink: 0;
+      background: var(--bg2); border-right: 1px solid var(--border);
+      padding: 32px 24px; position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    }
+    .main { flex: 1; padding: 48px; max-width: 860px; }
+
+    /* Sidebar */
+    .sidebar-logo { font-size: 20px; font-weight: 900; color: var(--teal); margin-bottom: 8px; text-decoration: none; display: block; }
+    .sidebar-sub { font-size: 12px; color: var(--muted); margin-bottom: 32px; }
+    .nav-section { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); margin: 20px 0 8px; }
+    .nav-link { display: block; color: var(--muted); text-decoration: none; font-size: 13px; padding: 5px 0; transition: color 0.15s; }
+    .nav-link:hover, .nav-link.active { color: var(--teal); }
+
+    /* Content */
+    h1 { font-size: 32px; font-weight: 900; margin-bottom: 12px; }
+    h2 { font-size: 22px; font-weight: 800; margin: 48px 0 16px; padding-top: 48px; border-top: 1px solid var(--border); }
+    h2:first-of-type { margin-top: 32px; border-top: none; padding-top: 0; }
+    h3 { font-size: 16px; font-weight: 700; margin: 24px 0 10px; color: var(--teal); }
+    p { color: var(--muted); margin-bottom: 16px; }
+    a { color: var(--teal); }
+
+    /* Code blocks */
+    pre {
+      background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 20px; overflow-x: auto; margin: 16px 0;
+      font-family: var(--mono); font-size: 13px; line-height: 1.7;
+    }
+    code { font-family: var(--mono); font-size: 13px; }
+    p code, li code {
+      background: rgba(45,212,191,0.08); color: var(--teal);
+      border-radius: 4px; padding: 2px 6px;
+    }
+
+    /* Endpoint cards */
+    .endpoint {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px 24px; margin: 16px 0;
+    }
+    .endpoint-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .method { font-family: var(--mono); font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 6px; }
+    .method.get  { background: rgba(74,222,128,0.15); color: var(--green); }
+    .method.post { background: rgba(45,212,191,0.15); color: var(--teal); }
+    .method.del  { background: rgba(248,113,113,0.15); color: var(--red); }
+    .endpoint-path { font-family: var(--mono); font-size: 14px; color: var(--text); }
+    .endpoint-desc { font-size: 13px; color: var(--muted); }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+    th { text-align: left; padding: 10px 12px; background: var(--bg2); color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+    td { padding: 10px 12px; border-top: 1px solid var(--border); color: var(--text); vertical-align: top; }
+    td:first-child { font-family: var(--mono); color: var(--teal); }
+
+    /* Badges */
+    .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+    .badge-auth { background: rgba(244,194,79,0.15); color: var(--gold); }
+    .badge-public { background: rgba(74,222,128,0.15); color: var(--green); }
+
+    /* Base URL bar */
+    .base-url { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; font-family: var(--mono); font-size: 13px; color: var(--teal); margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+    .base-url-label { font-size: 11px; color: var(--muted); font-family: sans-serif; }
+
+    ul { color: var(--muted); padding-left: 20px; margin-bottom: 16px; }
+    li { margin-bottom: 6px; }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <a href="/" class="sidebar-logo">COSTRINITY 🔱</a>
+    <div class="sidebar-sub">Developer Documentation</div>
+
+    <div class="nav-section">Getting Started</div>
+    <a href="#overview" class="nav-link">Overview</a>
+    <a href="#auth" class="nav-link">Authentication</a>
+    <a href="#base-url" class="nav-link">Base URLs</a>
+
+    <div class="nav-section">SNiPr API</div>
+    <a href="#snipe-eval" class="nav-link">POST /api/snipe</a>
+    <a href="#api-status" class="nav-link">GET /api/status</a>
+    <a href="#api-positions" class="nav-link">GET /api/positions</a>
+    <a href="#public-trades" class="nav-link">GET /api/public/trades</a>
+
+    <div class="nav-section">VIGIL SDK</div>
+    <a href="#vigil-sdk" class="nav-link">@costrinity/vigil-sdk</a>
+    <a href="#vigil-ingest" class="nav-link">POST /api/ingest</a>
+    <a href="#vigil-events" class="nav-link">SDK Methods</a>
+
+    <div class="nav-section">ElizaOS</div>
+    <a href="#elizaos-plugin" class="nav-link">@costrinity/snipr-elizaos-plugin</a>
+
+    <div class="nav-section">Links</div>
+    <a href="https://vigil.costrinity.xyz" class="nav-link" target="_blank">VIGIL Dashboard ↗</a>
+    <a href="https://t.me/ob_mikii" class="nav-link" target="_blank">Support ↗</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+    <h1>COS TRINITY Docs 🔱</h1>
+    <p>APIs and SDKs for integrating with SNiPr and VIGIL. Build autonomous trading agents, monitor on-chain activity, and plug into the COSTRINITY stack.</p>
+
+    <div id="base-url">
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <div class="base-url"><span class="base-url-label">SNiPr API</span>https://api.costrinity.xyz</div>
+        <div class="base-url"><span class="base-url-label">VIGIL</span>https://vigil.costrinity.xyz</div>
+      </div>
+    </div>
+
+    <!-- AUTH -->
+    <h2 id="auth">Authentication</h2>
+    <p>SNiPr API endpoints that require auth use an <code>x-api-key</code> header. VIGIL ingest uses <code>x-vigil-key</code> (your agent API key from the VIGIL dashboard).</p>
+    <pre>
+# SNiPr API
+curl -H "x-api-key: your_snipr_key" https://api.costrinity.xyz/api/snipe
+
+# VIGIL ingest
+curl -H "x-vigil-key: your_vigil_agent_key" https://vigil.costrinity.xyz/api/ingest</pre>
+
+    <!-- SNIPR API -->
+    <h2 id="snipe-eval">POST /api/snipe</h2>
+    <p>Evaluate a Solana token mint. Returns an AI score (0–100) and a recommendation.</p>
+    <span class="badge badge-auth">Requires x-api-key</span>
+
+    <div class="endpoint">
+      <div class="endpoint-header">
+        <span class="method post">POST</span>
+        <span class="endpoint-path">https://api.costrinity.xyz/api/snipe</span>
+      </div>
+      <div class="endpoint-desc">Fetches DexScreener data, runs heuristic AI scoring, returns buy/watch/skip recommendation.</div>
+    </div>
+
+    <h3>Request Body</h3>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Required</th><th>Description</th></tr>
+      <tr><td>mint</td><td>string</td><td>✓</td><td>Solana token mint address (base58)</td></tr>
+      <tr><td>reason</td><td>string</td><td>—</td><td>Optional context for the evaluation</td></tr>
+      <tr><td>max_sol</td><td>number</td><td>—</td><td>Max SOL to use if buying (informational)</td></tr>
+    </table>
+
+    <h3>Example</h3>
+    <pre>
+curl -X POST https://api.costrinity.xyz/api/snipe \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: your_key" \
+  -d '{"mint":"DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"}'</pre>
+
+    <h3>Response</h3>
+    <pre>
+{
+  "status": "evaluated",
+  "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+  "symbol": "BONK",
+  "price_usd": 0.0000284,
+  "volume_24h": 142500,
+  "liquidity_usd": 95000,
+  "ai_score": 84,
+  "recommendation": "buy",
+  "reason": "High volume + strong liquidity + positive momentum"
+}</pre>
+
+    <h3>Rate Limits</h3>
+    <p>10 requests per IP per minute. Returns <code>429</code> when exceeded.</p>
+
+    <!-- STATUS -->
+    <h2 id="api-status">GET /api/status</h2>
+    <p>Health check and usage stats. No auth required.</p>
+    <span class="badge badge-public">Public</span>
+
+    <div class="endpoint">
+      <div class="endpoint-header">
+        <span class="method get">GET</span>
+        <span class="endpoint-path">https://api.costrinity.xyz/api/status</span>
+      </div>
+    </div>
+    <pre>
+{
+  "status": "operational",
+  "version": "1.0.0",
+  "products": ["SNiPr", "VIGIL"],
+  "uptime_days": 12,
+  "requests_today": 47,
+  "timestamp": "2026-03-07T07:00:00.000Z"
+}</pre>
+
+    <!-- POSITIONS -->
+    <h2 id="api-positions">GET /api/positions</h2>
+    <p>Current open SNiPr positions. No auth required.</p>
+    <span class="badge badge-public">Public</span>
+
+    <div class="endpoint">
+      <div class="endpoint-header">
+        <span class="method get">GET</span>
+        <span class="endpoint-path">https://api.costrinity.xyz/api/positions</span>
+      </div>
+    </div>
+    <pre>
+{
+  "positions": [
+    { "mint": "DezX...", "symbol": "BONK", "bought_sol": 0.05, "current_mult": 1.4 }
+  ],
+  "count": 1,
+  "updated_at": "2026-03-07T07:00:00.000Z"
+}</pre>
+
+    <!-- PUBLIC TRADES -->
+    <h2 id="public-trades">GET /api/public/trades</h2>
+    <p>Public SNiPr trade history and aggregate stats.</p>
+    <span class="badge badge-public">Public</span>
+
+    <div class="endpoint">
+      <div class="endpoint-header">
+        <span class="method get">GET</span>
+        <span class="endpoint-path">https://api.costrinity.xyz/api/public/trades</span>
+      </div>
+    </div>
+    <pre>
+{
+  "trades": [
+    {
+      "token_symbol": "BONK",
+      "pnl_pct": 142.4,
+      "result": "win",
+      "entry_time": "2026-03-07T05:00:00Z",
+      "label": "SNiPr v5"
+    }
+  ],
+  "stats": {
+    "total": 47,
+    "wins": 33,
+    "losses": 14,
+    "win_rate": 70.2,
+    "avg_pnl_pct": 84.3
+  }
+}</pre>
+
+    <!-- VIGIL SDK -->
+    <h2 id="vigil-sdk">VIGIL SDK</h2>
+    <p>The official JavaScript/TypeScript SDK for logging agent events to VIGIL.</p>
+
+    <pre>npm install @costrinity/vigil-sdk</pre>
+
+    <h3>Quick Start</h3>
+    <pre>
+import { createVigil } from '@costrinity/vigil-sdk';
+
+const vigil = createVigil({ apiKey: 'your-vigil-agent-key' });
+
+await vigil.info('Agent started');
+await vigil.buy({ mint: 'DezX...', symbol: 'BONK', amount_sol: 0.05, tx: 'abc...' });
+await vigil.sell({ mint: 'DezX...', symbol: 'BONK', proceeds_sol: 0.12, pnl_sol: 0.07, pnl_pct: 142 });
+await vigil.error('RPC timeout', { endpoint: 'mainnet-beta' });</pre>
+
+    <h2 id="vigil-events">SDK Methods</h2>
+    <table>
+      <tr><th>Method</th><th>Description</th></tr>
+      <tr><td>vigil.info(msg, payload?)</td><td>Log an info/ok event</td></tr>
+      <tr><td>vigil.warn(msg, payload?)</td><td>Log a warning</td></tr>
+      <tr><td>vigil.error(msg, payload?)</td><td>Log an error</td></tr>
+      <tr><td>vigil.buy(opts)</td><td>Log a buy — mint, symbol, amount_sol, tx, score, reason</td></tr>
+      <tr><td>vigil.sell(opts)</td><td>Log a sell — mint, symbol, proceeds_sol, pnl_sol, pnl_pct, tx, reason</td></tr>
+      <tr><td>vigil.decision(msg, reasoning, payload?)</td><td>Log an agent decision with reasoning</td></tr>
+      <tr><td>vigil.trace(name, fn, payload?)</td><td>Wrap a function — auto-logs start, success, duration, errors</td></tr>
+      <tr><td>vigil.log(event)</td><td>Raw event (full control over all fields)</td></tr>
+    </table>
+
+    <!-- VIGIL INGEST -->
+    <h2 id="vigil-ingest">POST /api/ingest (raw)</h2>
+    <p>Direct REST API for non-JS environments. Auth via <code>x-vigil-key</code>.</p>
+    <span class="badge badge-auth">Requires x-vigil-key</span>
+
+    <pre>
+curl -X POST https://vigil.costrinity.xyz/api/ingest \
+  -H "Content-Type: application/json" \
+  -H "x-vigil-key: your_agent_key" \
+  -d '{
+    "event_type": "buy",
+    "status": "ok",
+    "message": "Buy BONK — 0.05 SOL",
+    "cost_sol": 0.05,
+    "payload": { "mint": "DezX...", "tx": "abc..." }
+  }'</pre>
+
+    <h3>Event Fields</h3>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+      <tr><td>event_type</td><td>string</td><td>buy · sell · error · decision · info · custom</td></tr>
+      <tr><td>status</td><td>string</td><td>ok · warning · error</td></tr>
+      <tr><td>message</td><td>string</td><td>Human-readable summary</td></tr>
+      <tr><td>payload</td><td>object</td><td>Any JSON — your agent's data</td></tr>
+      <tr><td>cost_sol</td><td>number</td><td>SOL spent (optional, for cost tracking)</td></tr>
+      <tr><td>cost_usd</td><td>number</td><td>USD equivalent (optional)</td></tr>
+    </table>
+
+    <!-- ELIZAOS -->
+    <h2 id="elizaos-plugin">ElizaOS Plugin</h2>
+    <p>Let any ElizaOS agent snipe tokens via natural language commands.</p>
+
+    <pre>npm install @costrinity/snipr-elizaos-plugin</pre>
+
+    <pre>
+import { sniprPlugin } from '@costrinity/snipr-elizaos-plugin';
+
+// Add to your ElizaOS agent config
+export default {
+  plugins: [sniprPlugin],
+  settings: {
+    SNIPR_API_KEY: process.env.SNIPR_API_KEY,
+    SNIPR_WALLET: process.env.SNIPR_WALLET,
+  }
+};</pre>
+
+    <h3>Available Actions</h3>
+    <table>
+      <tr><th>Action</th><th>Aliases</th><th>What it does</th></tr>
+      <tr><td>SNIPE_TOKEN</td><td>SNIPE, BUY_TOKEN</td><td>Evaluate + optionally snipe a mint address</td></tr>
+      <tr><td>CHECK_SNIPR_BALANCE</td><td>SNIPR_BALANCE</td><td>Check configured wallet SOL balance</td></tr>
+      <tr><td>GET_POSITIONS</td><td>OPEN_TRADES</td><td>List current open positions</td></tr>
+    </table>
+
+    <div style="margin-top:64px;padding-top:32px;border-top:1px solid var(--border);text-align:center;color:var(--dim);font-size:13px">
+      <a href="https://costrinity.xyz" style="color:var(--teal);text-decoration:none;font-weight:700">COSTRINITY 🔱</a>
+      &nbsp;·&nbsp;
+      <a href="https://vigil.costrinity.xyz" style="color:var(--muted);text-decoration:none">VIGIL</a>
+      &nbsp;·&nbsp;
+      <a href="https://t.me/ob_mikii" style="color:var(--muted);text-decoration:none">Support</a>
+      <br><br>
+      © 2026 COS TRINITY. Built different.
+    </div>
+  </main>
+</div>
+</body>
+</html>
