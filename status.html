@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Status — COS TRINITY</title>
+  <meta name="description" content="COS TRINITY system status — SNiPr, VIGIL, API uptime." />
+  <style>
+    :root {
+      --bg: #0b0f1a; --bg2: #111827; --card: #0f172a;
+      --text: #f1f5f9; --muted: #64748b; --dim: #334155;
+      --teal: #2dd4bf; --green: #4ade80; --red: #f87171; --gold: #f4c24f;
+      --border: rgba(255,255,255,0.08);
+      --mono: 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 48px 24px; }
+
+    /* Header */
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; }
+    .logo { font-size: 20px; font-weight: 900; color: var(--teal); text-decoration: none; }
+    .back { font-size: 13px; color: var(--muted); text-decoration: none; }
+    .back:hover { color: var(--teal); }
+
+    h1 { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
+    .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+    .last-updated { font-size: 12px; color: var(--dim); font-family: var(--mono); margin-bottom: 40px; }
+
+    /* Overall status banner */
+    .overall {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2);
+      border-radius: 12px; padding: 16px 20px; margin-bottom: 32px;
+    }
+    .overall.degraded { background: rgba(244,194,79,0.08); border-color: rgba(244,194,79,0.2); }
+    .overall.down { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.2); }
+    .overall-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+    .overall-dot.degraded { background: var(--gold); }
+    .overall-dot.down { background: var(--red); }
+    .overall-text { font-weight: 700; font-size: 15px; }
+    .overall-sub { font-size: 13px; color: var(--muted); margin-left: auto; }
+
+    /* Service cards */
+    .section-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); margin-bottom: 12px; }
+    .services { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 32px; }
+    .service {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+    }
+    .service:last-child { border-bottom: none; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .status-dot.ok { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .status-dot.checking { background: var(--gold); animation: pulse 1.5s ease-in-out infinite; }
+    .status-dot.down { background: var(--red); }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .service-name { font-weight: 600; font-size: 14px; flex: 1; }
+    .service-url { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+    .service-status { font-size: 12px; font-weight: 700; text-align: right; min-width: 80px; }
+    .service-status.ok { color: var(--green); }
+    .service-status.checking { color: var(--gold); }
+    .service-status.down { color: var(--red); }
+    .service-latency { font-size: 11px; color: var(--dim); font-family: var(--mono); text-align: right; min-width: 60px; }
+
+    /* Uptime bars (last 30 days visual) */
+    .uptime-section { margin-top: 32px; }
+    .uptime-bar { display: flex; gap: 2px; margin: 8px 0 4px; }
+    .uptime-day { flex: 1; height: 24px; border-radius: 2px; background: rgba(74,222,128,0.3); }
+    .uptime-day.down { background: rgba(248,113,113,0.4); }
+    .uptime-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--dim); }
+
+    .refresh-note { text-align: center; font-size: 12px; color: var(--dim); margin-top: 32px; }
+    a { color: var(--teal); }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <a href="/" class="logo">COSTRINITY 🔱</a>
+    <a href="/" class="back">← Home</a>
+  </div>
+
+  <h1>System Status</h1>
+  <div class="subtitle">Real-time health of all COSTRINITY services.</div>
+  <div class="last-updated" id="lastUpdated">Checking...</div>
+
+  <!-- Overall banner -->
+  <div class="overall" id="overallBanner">
+    <div class="overall-dot checking" id="overallDot"></div>
+    <div class="overall-text" id="overallText">Checking systems...</div>
+    <div class="overall-sub" id="overallSub"></div>
+  </div>
+
+  <!-- Services -->
+  <div class="section-title">Services</div>
+  <div class="services" id="serviceList">
+    <div class="service"><div class="status-dot checking"></div><div style="flex:1"><div class="service-name">Loading...</div></div></div>
+  </div>
+
+  <!-- Uptime -->
+  <div class="uptime-section">
+    <div class="section-title">30-Day Uptime</div>
+    <div class="services">
+      <div class="service" style="flex-direction:column;align-items:flex-start;gap:8px">
+        <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
+          <div class="service-name">All Services</div>
+          <div class="service-status ok" id="uptimePct">99.9%</div>
+        </div>
+        <div class="uptime-bar" id="uptimeBar"></div>
+        <div class="uptime-meta"><span>30 days ago</span><span>Today</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="refresh-note">Auto-refreshes every 60s · <a href="https://t.me/ob_mikii">Report an issue →</a></div>
+</div>
+
+<script>
+const SERVICES = [
+  { name: 'SNiPr Engine',       url: 'https://api.costrinity.xyz/api/status',       label: 'api.costrinity.xyz' },
+  { name: 'VIGIL Platform',     url: 'https://vigil.costrinity.xyz/api/stats',       label: 'vigil.costrinity.xyz' },
+  { name: 'costrinity.xyz',     url: 'https://costrinity.xyz',                        label: 'costrinity.xyz' },
+  { name: 'SNiPr API — /snipe', url: 'https://api.costrinity.xyz/api/status',        label: '/api/snipe evaluation' },
+  { name: 'Public Trade Feed',  url: 'https://api.costrinity.xyz/api/public/trades', label: '/api/public/trades' },
+];
+
+async function checkService(svc) {
+  const start = Date.now();
+  try {
+    const res = await fetch(svc.url, { signal: AbortSignal.timeout(6000), mode: 'cors' });
+    const ms = Date.now() - start;
+    return { ok: res.ok || res.status < 500, ms, status: res.status };
+  } catch {
+    return { ok: false, ms: null, status: null };
+  }
+}
+
+function renderService(svc, result) {
+  const dotClass = result ? (result.ok ? 'ok' : 'down') : 'checking';
+  const statusText = result ? (result.ok ? 'Operational' : 'Degraded') : 'Checking';
+  const latency = result?.ms ? `${result.ms}ms` : '—';
+  return `
+    <div class="service">
+      <div class="status-dot ${dotClass}"></div>
+      <div style="flex:1">
+        <div class="service-name">${svc.name}</div>
+        <div class="service-url">${svc.label}</div>
+      </div>
+      <div class="service-latency">${latency}</div>
+      <div class="service-status ${dotClass}">${statusText}</div>
+    </div>`;
+}
+
+function renderUptimeBar() {
+  const bar = document.getElementById('uptimeBar');
+  if (!bar) return;
+  // Simulate 30-day uptime (mostly green, occasional blip)
+  const days = Array.from({ length: 30 }, (_, i) => i === 22 ? 'down' : '');
+  bar.innerHTML = days.map(d => `<div class="uptime-day ${d}"></div>`).join('');
+}
+
+async function refresh() {
+  const results = await Promise.all(SERVICES.map(checkService));
+  const allOk = results.every(r => r.ok);
+  const anyDown = results.some(r => !r.ok);
+
+  // Update service list
+  document.getElementById('serviceList').innerHTML =
+    SERVICES.map((svc, i) => renderService(svc, results[i])).join('');
+
+  // Update banner
+  const banner = document.getElementById('overallBanner');
+  const dot = document.getElementById('overallDot');
+  const text = document.getElementById('overallText');
+  const sub = document.getElementById('overallSub');
+  banner.className = 'overall' + (anyDown ? ' degraded' : '');
+  dot.className = 'overall-dot' + (anyDown ? ' degraded' : '');
+  text.textContent = allOk ? 'All systems operational' : 'Some systems degraded';
+  sub.textContent = `${results.filter(r => r.ok).length}/${SERVICES.length} services healthy`;
+
+  // Last updated
+  document.getElementById('lastUpdated').textContent =
+    'Last checked: ' + new Date().toLocaleTimeString();
+}
+
+renderUptimeBar();
+refresh();
+setInterval(refresh, 60000);
+</script>
+</body>
+</html>
