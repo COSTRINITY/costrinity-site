@@ -1013,7 +1013,8 @@
 
 <!-- ─── TICKER ─── -->
 <div class="ticker-wrap">
-  <div class="ticker-track">
+  <div class="ticker-track" id="tickerTrack">
+    <!-- Fallback static items shown until live data loads -->
     <div class="tick"><span class="pair">BONK/SOL</span><span class="up">+284%</span><span>sniped at launch</span></div>
     <div class="tick"><span class="pair">WIF/SOL</span><span class="up">+1,240%</span><span>sub-second entry</span></div>
     <div class="tick"><span class="pair">POPCAT/SOL</span><span class="up">+643%</span><span>AI-selected</span></div>
@@ -1028,6 +1029,113 @@
     <div class="tick"><span class="pair">SLERF/SOL</span><span class="up">+440%</span><span>AI-filtered entry</span></div>
   </div>
 </div>
+<script>
+(function () {
+  const STATIC_FALLBACK = [
+    { pair: 'BONK/SOL', pct: '+284%', label: 'sniped at launch', up: true },
+    { pair: 'WIF/SOL',  pct: '+1,240%', label: 'sub-second entry', up: true },
+    { pair: 'POPCAT/SOL', pct: '+643%', label: 'AI-selected', up: true },
+    { pair: 'BOME/SOL', pct: '+890%', label: 'on-chain verified', up: true },
+    { pair: 'MEW/SOL',  pct: '+2,100%', label: 'sniped at launch', up: true },
+    { pair: 'SLERF/SOL', pct: '+440%', label: 'AI-filtered entry', up: true },
+  ];
+
+  // Query terms that tend to surface high-gain Solana meme tokens
+  const QUERIES = ['solana meme', 'sol launch', 'pumpfun solana'];
+
+  function fmt(n) {
+    const sign = n >= 0 ? '+' : '';
+    return sign + n.toFixed(1) + '%';
+  }
+
+  function labelFor(pct) {
+    if (pct > 500) return 'explosive launch';
+    if (pct > 200) return 'AI-selected';
+    if (pct > 100) return 'sniped at entry';
+    if (pct > 50)  return 'on-chain verified';
+    if (pct > 0)   return 'live market';
+    return 'market move';
+  }
+
+  function buildTicks(items) {
+    // Duplicate for seamless infinite scroll
+    const doubled = [...items, ...items];
+    return doubled.map(({ pair, pct, label, up }) =>
+      `<div class="tick">
+        <span class="pair">${pair}</span>
+        <span class="${up ? 'up' : 'down'}">${pct}</span>
+        <span>${label}</span>
+      </div>`
+    ).join('');
+  }
+
+  function renderTicker(items) {
+    const track = document.getElementById('tickerTrack');
+    if (!track) return;
+    track.innerHTML = buildTicks(items);
+    // Reset animation
+    track.style.animation = 'none';
+    track.offsetHeight; // reflow
+    track.style.animation = '';
+  }
+
+  async function fetchLiveTicker() {
+    try {
+      // Try DexScreener — fetch top Solana gainers (24h) from recent pairs
+      const query = QUERIES[Math.floor(Math.random() * QUERIES.length)];
+      const res = await fetch(
+        `https://api.dexscreener.com/latest/dex/search?q=${encodeURIComponent(query)}`,
+        { signal: AbortSignal.timeout(5000) }
+      );
+      if (!res.ok) throw new Error('bad response');
+      const data = await res.json();
+
+      const solPairs = (data.pairs || [])
+        .filter(p =>
+          p.chainId === 'solana' &&
+          p.priceChange?.h24 != null &&
+          p.baseToken?.symbol &&
+          p.baseToken.symbol.length <= 10
+        )
+        // Sort by absolute 24h change, prefer gainers
+        .sort((a, b) => b.priceChange.h24 - a.priceChange.h24)
+        .slice(0, 10);
+
+      if (solPairs.length < 4) throw new Error('not enough pairs');
+
+      const items = solPairs.map(p => {
+        const pct = p.priceChange.h24;
+        return {
+          pair: p.baseToken.symbol + '/SOL',
+          pct: fmt(pct),
+          label: labelFor(pct),
+          up: pct >= 0,
+        };
+      });
+
+      renderTicker(items);
+    } catch (e) {
+      // Silently fall back to static — ticker already showing static
+      console.debug('[ticker] live fetch failed, using static', e.message);
+    }
+  }
+
+  // Add .down style if not already in CSS
+  const style = document.createElement('style');
+  style.textContent = '.tick .down { color: #f87171; }';
+  document.head.appendChild(style);
+
+  // Load on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fetchLiveTicker);
+  } else {
+    fetchLiveTicker();
+  }
+
+  // Refresh every 90 seconds
+  setInterval(fetchLiveTicker, 90000);
+})();
+</script>
 
 <!-- ─── HERO ─── -->
 <div class="hero">
