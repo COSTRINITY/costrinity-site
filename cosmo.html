@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cosmo 🌌 — AI Roblox Studio Assistant · COSTRINITY</title>
+  <meta name="description" content="Cosmo is an AI-powered coding assistant for Roblox Studio. Describe what you want — Cosmo writes the Lua code instantly. Built on Claude 3.5 Sonnet." />
+  <meta name="keywords" content="Cosmo, Roblox, Lua, AI assistant, Roblox Studio, Claude, COSTRINITY, game dev, Luau" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #0b0f1a;
+      --bg2:          #111827;
+      --surface:      #131929;
+      --card:         #0f1520;
+      --border:       rgba(255,255,255,0.08);
+      --teal:         #2dd4bf;
+      --green:        #4ade80;
+      --gold:         #f4c24f;
+      --purple:       #a78bfa;
+      --purple-deep:  #7c3aed;
+      --purple-dim:   rgba(167,139,250,0.1);
+      --purple-glow:  rgba(167,139,250,0.35);
+      --text:         #e8eaf0;
+      --muted:        rgba(232,234,240,0.5);
+      --mono:         'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── AMBIENT BG ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(167,139,250,0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 45% 35% at 88% 65%, rgba(124,58,237,0.1) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 10% 85%, rgba(109,40,217,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(11,15,26,0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+    .nav-wordmark {
+      font-size: 14px; font-weight: 800;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--purple);
+    }
+
+    .nav-links {
+      display: flex; gap: 28px; align-items: center;
+    }
+    .nav-links a {
+      color: var(--muted); font-size: 13px; font-weight: 500;
+      text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--purple); font-weight: 700; }
+
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--muted) !important;
+      font-size: 12px !important;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 14px;
+      transition: border-color 0.2s, color 0.2s !important;
+    }
+    .nav-back:hover {
+      border-color: var(--purple-glow) !important;
+      color: var(--purple) !important;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 130px 24px 80px;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(167,139,250,0.1);
+      border: 1px solid rgba(167,139,250,0.3);
+      border-radius: 999px;
+      padding: 7px 20px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 32px;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--purple);
+      box-shadow: 0 0 8px var(--purple);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero h1 {
+      font-size: clamp(72px, 14vw, 160px);
+      font-weight: 900; line-height: 1.0; letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 40%, #7c3aed 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      max-width: 560px; font-size: 20px; color: var(--muted);
+      line-height: 1.65; margin-bottom: 48px;
+      font-weight: 400;
+    }
+
+    .hero-sub strong { color: var(--text); font-weight: 600; }
+
+    .hero-actions {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-cosmo {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, #a78bfa, #7c3aed);
+      color: #fff; font-weight: 700; font-size: 14px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 15px 36px; border-radius: 10px;
+      border: 1px solid rgba(167,139,250,0.5);
+      text-decoration: none; cursor: pointer;
+      transition: box-shadow 0.25s, transform 0.2s;
+    }
+    .btn-cosmo:hover {
+      box-shadow: 0 0 40px rgba(167,139,250,0.45);
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--text);
+      font-weight: 600; font-size: 14px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 15px 36px; border-radius: 10px;
+      border: 1px solid var(--border);
+      text-decoration: none; cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .btn-ghost:hover {
+      background: rgba(167,139,250,0.08);
+      border-color: var(--purple-glow);
+      transform: translateY(-2px);
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      position: relative; z-index: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--purple-glow), transparent);
+    }
+
+    /* ─── SECTIONS ─── */
+    section { position: relative; z-index: 1; }
+
+    .section-inner {
+      max-width: 1160px; margin: 0 auto;
+      padding: 100px 24px;
+    }
+
+    .section-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--purple); margin-bottom: 12px; text-align: center;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 800; text-align: center;
+      letter-spacing: -0.01em; margin-bottom: 16px;
+    }
+    .section-title .purple { color: var(--purple); }
+
+    .section-sub {
+      text-align: center; color: var(--muted);
+      font-size: 16px; max-width: 560px;
+      margin: 0 auto 60px; line-height: 1.75;
+    }
+
+    /* ─── DEMO SECTION ─── */
+    .demo-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 80px rgba(167,139,250,0.08);
+    }
+
+    .demo-bar {
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .demo-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+    }
+    .demo-dot-red   { background: #ff5f56; }
+    .demo-dot-yellow{ background: #ffbd2e; }
+    .demo-dot-green { background: #27c93f; }
+    .demo-title-bar {
+      flex: 1; text-align: center;
+      font-size: 12px; color: var(--muted);
+      font-family: var(--mono); letter-spacing: 0.04em;
+    }
+
+    .demo-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .demo-left {
+      border-right: 1px solid var(--border);
+      padding: 32px;
+    }
+    .demo-right {
+      padding: 32px;
+    }
+
+    .demo-panel-label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 16px;
+    }
+
+    .demo-prompt-box {
+      background: rgba(167,139,250,0.06);
+      border: 1px solid rgba(167,139,250,0.2);
+      border-radius: 10px;
+      padding: 20px;
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.7;
+      position: relative;
+    }
+    .demo-prompt-box::before {
+      content: '›';
+      position: absolute;
+      top: 20px; left: 12px;
+      color: var(--purple);
+      font-size: 20px; font-weight: 700;
+      line-height: 1;
+    }
+    .demo-prompt-box span {
+      padding-left: 12px;
+      display: block;
+    }
+    .typing-cursor {
+      display: inline-block;
+      width: 2px; height: 1em;
+      background: var(--purple);
+      margin-left: 2px;
+      vertical-align: text-bottom;
+      animation: blink-cursor 1s step-end infinite;
+    }
+    @keyframes blink-cursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .demo-arrow {
+      display: flex; align-items: center; justify-content: center;
+      padding: 12px 0 4px;
+      font-size: 11px; font-weight: 700;
+      color: var(--purple); letter-spacing: 0.1em;
+      text-transform: uppercase; gap: 8px;
+    }
+    .demo-arrow::before,
+    .demo-arrow::after {
+      content: ''; flex: 1;
+      height: 1px; background: rgba(167,139,250,0.2);
+    }
+
+    .code-block {
+      background: #0a0d15;
+      border: 1px solid rgba(167,139,250,0.15);
+      border-radius: 10px;
+      padding: 20px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    /* Syntax highlight colors */
+    .kw    { color: #c792ea; font-weight: 600; } /* keywords: local, function, if, end, then */
+    .fn    { color: #82aaff; }                   /* function names / method calls */
+    .str   { color: #c3e88d; }                   /* strings */
+    .num   { color: #f78c6c; }                   /* numbers */
+    .cmt   { color: #546e7a; font-style: italic; }/* comments */
+    .obj   { color: #ffcb6b; }                   /* globals / services */
+    .colon { color: #89ddff; }                   /* colons, operators */
+    .cosmo-tag { color: var(--purple); }
+
+    /* ─── FEATURES GRID ─── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 28px;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.25s;
+    }
+    .feature-card:hover {
+      border-color: rgba(167,139,250,0.4);
+      box-shadow: 0 0 30px rgba(167,139,250,0.12);
+      transform: translateY(-4px);
+    }
+
+    .feature-icon {
+      font-size: 36px; margin-bottom: 18px;
+    }
+    .feature-title {
+      font-size: 15px; font-weight: 700;
+      color: var(--purple); margin-bottom: 10px;
+      letter-spacing: 0.02em;
+    }
+    .feature-body {
+      font-size: 14px; color: var(--muted); line-height: 1.7;
+    }
+
+    /* ─── HOW IT WORKS ─── */
+    .steps-row {
+      display: flex; gap: 0; align-items: flex-start;
+      position: relative; max-width: 860px; margin: 0 auto;
+    }
+    .steps-row::before {
+      content: '';
+      position: absolute; top: 36px; left: 36px; right: 36px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--purple-glow), transparent);
+    }
+    .step {
+      flex: 1; padding: 0 16px; text-align: center;
+    }
+    .step-num {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--card);
+      border: 2px solid var(--purple-glow);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 22px; font-weight: 700;
+      color: var(--purple);
+      margin: 0 auto 20px;
+      box-shadow: 0 0 20px rgba(167,139,250,0.2);
+    }
+    .step-title {
+      font-size: 14px; font-weight: 700;
+      color: var(--text); margin-bottom: 8px;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .step-body {
+      font-size: 13px; color: var(--muted); line-height: 1.65;
+    }
+
+    /* ─── COMPARISON TABLE ─── */
+    .comp-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .comp-table {
+      width: 100%; border-collapse: collapse; font-size: 14px;
+    }
+    .comp-table thead {
+      background: rgba(167,139,250,0.07);
+    }
+    .comp-table th {
+      padding: 16px 24px; text-align: left;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .comp-table th.cosmo-col {
+      color: var(--purple); text-align: center;
+    }
+    .comp-table th.other-col {
+      text-align: center; color: var(--muted);
+    }
+    .comp-table td {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text); vertical-align: middle;
+    }
+    .comp-table td.yes {
+      text-align: center; color: var(--green); font-weight: 700;
+    }
+    .comp-table td.no {
+      text-align: center; color: rgba(232,234,240,0.25);
+    }
+    .comp-table td.partial {
+      text-align: center; color: var(--gold); font-size: 13px;
+    }
+    .comp-table td.cosmo-cell {
+      text-align: center; color: var(--purple); font-weight: 700;
+    }
+    .comp-table tr:hover { background: rgba(167,139,250,0.03); }
+
+    /* ─── WAITLIST / CTA ─── */
+    .cta-section {
+      position: relative; z-index: 1;
+      padding: 100px 24px;
+    }
+    .cta-box {
+      max-width: 680px; margin: 0 auto;
+      background: var(--card);
+      border: 1px solid rgba(167,139,250,0.3);
+      border-radius: 24px;
+      padding: 72px 48px;
+      text-align: center;
+      box-shadow: 0 0 100px rgba(167,139,250,0.08);
+    }
+
+    .cta-box h2 {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 800; margin-bottom: 12px; line-height: 1.2;
+    }
+
+    .cta-box .purple { color: var(--purple); }
+
+    .cta-box p {
+      font-size: 15px; color: var(--muted);
+      line-height: 1.7; margin-bottom: 36px;
+    }
+
+    .waitlist-form {
+      display: flex; gap: 12px;
+      max-width: 460px; margin: 0 auto 24px;
+    }
+    .waitlist-input {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .waitlist-input:focus {
+      border-color: var(--purple-glow);
+    }
+    .waitlist-input::placeholder { color: var(--muted); }
+
+    .waitlist-btn {
+      background: linear-gradient(135deg, #a78bfa, #7c3aed);
+      color: #fff; font-weight: 700; font-size: 14px;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 14px 28px; border-radius: 10px;
+      border: none; cursor: pointer;
+      white-space: nowrap;
+      transition: box-shadow 0.2s;
+    }
+    .waitlist-btn:hover {
+      box-shadow: 0 0 28px rgba(167,139,250,0.4);
+    }
+
+    .cta-or {
+      font-size: 12px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin-bottom: 16px;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      position: relative; z-index: 1;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 48px 48px 28px;
+    }
+    .footer-row {
+      max-width: 1160px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 24px;
+    }
+    .footer-brand {
+      font-size: 14px; font-weight: 800;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--purple); text-decoration: none;
+    }
+    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-links a {
+      font-size: 13px; color: var(--muted);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy {
+      max-width: 1160px; margin: 28px auto 0;
+      text-align: center; font-size: 12px;
+      color: rgba(232,234,240,0.2);
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* ─── MOBILE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 14px 20px; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 11px; }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 14px 18px; }
+      .nav-links .hide-mobile { display: none; }
+
+      .hero { padding: 100px 18px 60px; }
+      .hero h1 { font-size: clamp(56px, 18vw, 100px); }
+      .hero-sub { font-size: 16px; }
+      .hero-actions { flex-direction: column; align-items: center; }
+      .hero-actions a { width: 100%; max-width: 320px; justify-content: center; }
+
+      .section-inner { padding: 60px 18px; }
+
+      .demo-panels { grid-template-columns: 1fr; }
+      .demo-left { border-right: none; border-bottom: 1px solid var(--border); }
+
+      .features-grid { grid-template-columns: 1fr; }
+
+      .steps-row { flex-direction: column; gap: 32px; align-items: center; }
+      .steps-row::before { display: none; }
+      .step { max-width: 320px; }
+
+      .comp-table th, .comp-table td { padding: 10px 12px; font-size: 12px; }
+
+      .cta-box { padding: 40px 20px; }
+      .waitlist-form { flex-direction: column; }
+      .waitlist-input, .waitlist-btn { width: 100%; }
+
+      footer { padding: 32px 18px 20px; }
+      .footer-row { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="/" class="nav-brand">COSTRINITY 🔱</a>
+  <div class="nav-links">
+    <a href="/index.html#snipr" class="hide-mobile">SNiPr</a>
+    <a href="/index.html#vigil" class="hide-mobile">VIGIL</a>
+    <a href="/cosmo.html" class="active">Cosmo</a>
+    <a href="/" class="nav-back">← Back to Home</a>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<div class="hero">
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    AI-Powered · Roblox Studio · Claude 3.5
+  </div>
+  <h1>Cosmo 🌌</h1>
+  <p class="hero-sub">
+    Talk to your game.<br>
+    <strong>Cosmo writes the code.</strong>
+  </p>
+  <div class="hero-actions">
+    <a href="https://t.me/ob_mikii" target="_blank" class="btn-cosmo">Get Early Access →</a>
+    <a href="https://github.com/COSTRINITY/cosmo" target="_blank" class="btn-ghost">View on GitHub →</a>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ─── DEMO SECTION ─── -->
+<section id="demo">
+  <div class="section-inner">
+    <p class="section-label">See it in action</p>
+    <h2 class="section-title">Type it. <span class="purple">Cosmo codes it.</span></h2>
+    <p class="section-sub">Describe what you want in plain English. Cosmo understands Roblox and writes production-ready Luau code — instantly, directly in your Studio.</p>
+
+    <div class="demo-wrap">
+      <div class="demo-bar">
+        <span class="demo-dot demo-dot-red"></span>
+        <span class="demo-dot demo-dot-yellow"></span>
+        <span class="demo-dot demo-dot-green"></span>
+        <span class="demo-title-bar">Cosmo — Roblox Studio AI Assistant</span>
+      </div>
+
+      <div class="demo-panels">
+        <!-- LEFT: User input -->
+        <div class="demo-left">
+          <div class="demo-panel-label">💬 You say…</div>
+          <div class="demo-prompt-box">
+            <span>
+              add a speed boost that gives 2x speed for 5 seconds when a player touches a part called SpeedPad<span class="typing-cursor"></span>
+            </span>
+          </div>
+          <div class="demo-arrow">Cosmo generates instantly</div>
+          <div style="margin-top: 16px; background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.15); border-radius: 10px; padding: 16px; font-size: 13px; color: var(--muted); line-height: 1.7;">
+            <span style="color: var(--purple); font-weight: 700;">🌌 Cosmo</span><br>
+            Got it! Creating a speed boost system — 2× WalkSpeed for 5 seconds on SpeedPad touch. Inserting into your ServerScriptService now…
+          </div>
+        </div>
+
+        <!-- RIGHT: Code output -->
+        <div class="demo-right">
+          <div class="demo-panel-label">⚡ Cosmo writes…</div>
+          <div class="code-block">
+<span class="cmt">-- Speed Boost System by Cosmo <span class="cosmo-tag">🌌</span></span>
+<span class="kw">local</span> <span class="obj">Players</span> <span class="colon">=</span> <span class="obj">game</span><span class="colon">:</span><span class="fn">GetService</span>(<span class="str">"Players"</span>)
+<span class="kw">local</span> speedPad <span class="colon">=</span> <span class="obj">workspace</span><span class="colon">:</span><span class="fn">WaitForChild</span>(<span class="str">"SpeedPad"</span>)
+
+speedPad<span class="colon">.</span><span class="obj">Touched</span><span class="colon">:</span><span class="fn">Connect</span>(<span class="kw">function</span>(hit)
+  <span class="kw">local</span> character <span class="colon">=</span> hit<span class="colon">.</span><span class="obj">Parent</span>
+  <span class="kw">local</span> humanoid <span class="colon">=</span> character<span class="colon">:</span><span class="fn">FindFirstChild</span>(<span class="str">"Humanoid"</span>)
+  <span class="kw">if</span> humanoid <span class="kw">then</span>
+    humanoid<span class="colon">.</span><span class="obj">WalkSpeed</span> <span class="colon">=</span> <span class="num">32</span>  <span class="cmt">-- 2x default</span>
+    task<span class="colon">.</span><span class="fn">wait</span>(<span class="num">5</span>)
+    humanoid<span class="colon">.</span><span class="obj">WalkSpeed</span> <span class="colon">=</span> <span class="num">16</span>  <span class="cmt">-- reset</span>
+  <span class="kw">end</span>
+<span class="kw">end</span>)
+          </div>
+          <div style="margin-top: 14px; display: flex; gap: 10px; align-items: center;">
+            <span style="background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: var(--green); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 5px 12px; border-radius: 6px;">✓ Inserted into Studio</span>
+            <span style="font-size: 12px; color: var(--muted);">via Rojo sync · 0.4s</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── FEATURES ─── -->
+<section id="features">
+  <div class="section-inner">
+    <p class="section-label">What Cosmo does</p>
+    <h2 class="section-title">Built for <span class="purple">Roblox devs</span></h2>
+    <p class="section-sub">Every feature designed for one purpose: getting your ideas into Studio faster than you can type them.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-title">Natural Language to Lua</div>
+        <div class="feature-body">
+          Describe what you want in plain English. Cosmo understands Roblox's APIs, Luau patterns, and game logic — generating production-ready code instantly.
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Real-Time in Studio</div>
+        <div class="feature-body">
+          Code appears directly in your Script editor via Rojo sync. No copy-paste, no switching windows. Just describe → done.
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <div class="feature-title">Claude-Powered</div>
+        <div class="feature-body">
+          Built on Claude 3.5 Sonnet — the same AI trusted by professional software engineers. Smart enough to understand context across your whole project.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── HOW IT WORKS ─── -->
+<section id="how">
+  <div class="section-inner">
+    <p class="section-label">Setup in 2 minutes</p>
+    <h2 class="section-title">How it <span class="purple">works</span></h2>
+    <p class="section-sub">A lightweight local bridge between your words and your Studio. Nothing complex, nothing cloud-dependent.</p>
+
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Install</div>
+        <div class="step-body">Install the Cosmo server and the Roblox Studio plugin. Takes about 2 minutes.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Describe</div>
+        <div class="step-body">Type what you want in natural language — a mechanic, a system, a bug fix. Anything.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Done</div>
+        <div class="step-body">The code appears directly in your Studio project. Review it, run it, ship it.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── COMPARISON TABLE ─── -->
+<section id="compare">
+  <div class="section-inner">
+    <p class="section-label">Why Cosmo</p>
+    <h2 class="section-title">Cosmo vs <span class="purple">the alternatives</span></h2>
+    <p class="section-sub">Built specifically for Roblox. The others weren't.</p>
+
+    <div class="comp-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th class="cosmo-col">🌌 Cosmo</th>
+            <th class="other-col">GitHub Copilot</th>
+            <th class="other-col">ChatGPT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Roblox Lua / Luau specific</td>
+            <td class="yes">✅ Yes</td>
+            <td class="no">❌</td>
+            <td class="partial">⚠️ Partial</td>
+          </tr>
+          <tr>
+            <td>Inserts directly into Studio</td>
+            <td class="yes">✅ Yes</td>
+            <td class="no">❌</td>
+            <td class="no">❌</td>
+          </tr>
+          <tr>
+            <td>Streams in real-time</td>
+            <td class="yes">✅ Yes</td>
+            <td class="yes">✅ Yes</td>
+            <td class="no">❌</td>
+          </tr>
+          <tr>
+            <td>Free for devs</td>
+            <td class="cosmo-cell">✅ Early access</td>
+            <td class="partial">Paid</td>
+            <td class="partial">Limited</td>
+          </tr>
+          <tr>
+            <td>Runs locally &amp; private</td>
+            <td class="yes">✅ Yes</td>
+            <td class="no">❌ Cloud only</td>
+            <td class="no">❌ Cloud only</td>
+          </tr>
+          <tr>
+            <td>Understands your project context</td>
+            <td class="yes">✅ Yes</td>
+            <td class="partial">⚠️ Partial</td>
+            <td class="no">❌</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ─── WAITLIST / CTA ─── -->
+<section class="cta-section" id="waitlist">
+  <div class="cta-box">
+    <div style="font-size: 48px; margin-bottom: 20px;">🌌</div>
+    <h2>Join the waitlist.<br><span class="purple">First 20 devs get free access.</span></h2>
+    <p>Cosmo is in early access. Drop your email and we'll reach out when your spot is ready — or message directly on Telegram to skip the line.</p>
+
+    <form class="waitlist-form" onsubmit="handleWaitlist(event)">
+      <input
+        type="email"
+        class="waitlist-input"
+        placeholder="your@email.com"
+        id="waitlistEmail"
+        autocomplete="email"
+      />
+      <button type="submit" class="waitlist-btn">Join Waitlist</button>
+    </form>
+
+    <p id="waitlist-thanks" style="display:none; color: var(--green); font-size: 14px; font-weight: 600; margin-bottom: 16px;">
+      ✓ You're on the list! We'll be in touch.
+    </p>
+
+    <p class="cta-or">— or —</p>
+
+    <a href="https://t.me/ob_mikii" target="_blank" class="btn-cosmo" style="display: inline-flex;">
+      💬 Message @ob_mikii on Telegram
+    </a>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-row">
+    <a href="/" class="footer-brand">COSTRINITY 🔱</a>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/index.html#snipr">SNiPr</a>
+      <a href="/index.html#vigil">VIGIL</a>
+      <a href="/cosmo.html" style="color: var(--purple);">Cosmo 🌌</a>
+      <a href="https://github.com/COSTRINITY/cosmo" target="_blank">GitHub</a>
+    </div>
+    <span style="font-size: 12px; color: var(--muted);">Cosmo is a COS TRINITY product</span>
+  </div>
+  <p class="footer-copy">
+    © 2026 COS TRINITY · <a href="https://costrinity.xyz" style="color: var(--purple); text-decoration: none;">costrinity.xyz</a> ·
+    <a href="https://github.com/COSTRINITY/cosmo" target="_blank" style="color: var(--muted); text-decoration: none;">github.com/COSTRINITY/cosmo</a>
+  </p>
+</footer>
+
+<script>
+function handleWaitlist(e) {
+  e.preventDefault();
+  const email = document.getElementById('waitlistEmail').value;
+  if (!email) return;
+  document.querySelector('.waitlist-form').style.display = 'none';
+  document.getElementById('waitlist-thanks').style.display = 'block';
+  // In production, this would POST to an endpoint
+  console.log('Waitlist signup:', email);
+}
+</script>
+
+</body>
+</html>
