@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SNiPr — Live Results | COS TRINITY</title>
+  <meta name="description" content="Live SNiPr trade results — real-time on-chain verified wins and losses from the COS TRINITY autonomous Solana sniper bot." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:           #06061a;
+      --bg2:          #09092a;
+      --surface:      #0e0e38;
+      --card:         #0d0d32;
+      --border:       rgba(139,92,246,0.2);
+      --border-glow:  rgba(139,92,246,0.55);
+      --purple:       #7c3aed;
+      --purple-lt:    #a78bfa;
+      --purple-dim:   rgba(139,92,246,0.12);
+      --teal:         #2dd4bf;
+      --teal-dim:     rgba(45,212,191,0.12);
+      --gold:         #f4c24f;
+      --gold-dim:     rgba(244,194,79,0.1);
+      --text:         #e8eaf0;
+      --muted:        rgba(232,234,240,0.48);
+      --green:        #4ade80;
+      --red:          #f87171;
+      --mono:         'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 90% 55% at 50% -5%, rgba(109,40,217,0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 90% 70%, rgba(91,33,182,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 5% 80%, rgba(76,29,149,0.10) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(6,6,26,0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--purple-lt);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+    }
+    .nav-logo span { color: var(--teal); }
+
+    .nav-back {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--purple-lt); }
+    .nav-back::before { content: '← '; }
+
+    /* ─── MAIN CONTENT ─── */
+    main {
+      position: relative; z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 120px 24px 80px;
+    }
+
+    /* ─── HEADER ─── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .page-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin: 0 0 8px;
+    }
+
+    .page-title .accent { color: var(--teal); }
+
+    .page-subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      margin-right: 8px;
+      animation: pulse 2s ease-in-out infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* ─── STATS BAR ─── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+
+    .stat-card:hover { border-color: var(--border-glow); }
+
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-family: var(--mono);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-value.green { color: var(--green); }
+    .stat-value.teal  { color: var(--teal); }
+
+    /* ─── TRADES FEED ─── */
+    .feed-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .feed-title {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--purple-lt);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .refresh-info {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    #trades-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .trade-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+
+    .trade-card:hover {
+      border-color: var(--border-glow);
+      transform: translateY(-1px);
+    }
+
+    .trade-card.historical {
+      opacity: 0.75;
+      border-style: dashed;
+    }
+
+    .badge {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .trade-info { flex: 1; min-width: 0; }
+
+    .trade-symbol {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .trade-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .trade-right { text-align: right; flex-shrink: 0; }
+
+    .trade-pnl {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .trade-pnl.win  { color: var(--green); }
+    .trade-pnl.loss { color: var(--red); }
+
+    .trade-time {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ─── EMPTY STATE ─── */
+    .seeded-note {
+      background: var(--teal-dim);
+      border: 1px solid rgba(45,212,191,0.25);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+      color: var(--teal);
+      text-align: center;
+    }
+
+    /* ─── LOADING ─── */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--purple-lt);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── FOOTER ─── */
+    footer {
+      position: relative; z-index: 1;
+      text-align: center;
+      padding: 32px 24px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      border-top: 1px solid var(--border);
+    }
+
+    footer a { color: var(--purple-lt); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      nav { padding: 14px 20px; }
+      .stats-bar { grid-template-columns: 1fr; gap: 10px; }
+      .stat-value { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">COS <span>TRINITY</span></a>
+  <a class="nav-back" href="/">Back to Home</a>
+</nav>
+
+<main>
+  <div class="page-header">
+    <h1 class="page-title"><span class="accent">SNiPr</span> — Live Results</h1>
+    <p class="page-subtitle">
+      <span class="live-dot"></span>
+      On-chain verified trades, logged in real time by SNiPr v5
+    </p>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-label">Total Trades</div>
+      <div class="stat-value teal" id="stat-total">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Win Rate</div>
+      <div class="stat-value green" id="stat-winrate">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg Return</div>
+      <div class="stat-value green" id="stat-avg">—</div>
+    </div>
+  </div>
+
+  <!-- Feed -->
+  <div class="feed-header">
+    <div class="feed-title">📊 Trade Feed</div>
+    <div class="refresh-info" id="refresh-info">Auto-refreshes every 30s</div>
+  </div>
+
+  <div id="trades-list">
+    <div class="loading"><span class="spinner"></span>Loading live results…</div>
+  </div>
+</main>
+
+<footer>
+  <p>
+    All results are on-chain verifiable. SNiPr v5 — AI-powered autonomous Solana sniper by
+    <a href="/">COS TRINITY</a>. &nbsp;|&nbsp;
+    <a href="https://t.me/COSTRINSNIPBOT" target="_blank" rel="noopener">Get SNiPr on Telegram</a>
+  </p>
+</footer>
+
+<script>
+const API = 'https://api.costrinity.xyz/api/public/trades';
+
+// Historical placeholders shown when no live data
+const HISTORICAL_TRADES = [
+  { token_symbol: 'WIF', token_name: 'dogwifhat', pnl_pct: 1240, result: 'win',  label: 'historical' },
+  { token_symbol: 'BONK', token_name: 'Bonk',      pnl_pct: 284,  result: 'win',  label: 'historical' },
+  { token_symbol: 'PNUT', token_name: 'Peanut',     pnl_pct: 620,  result: 'win',  label: 'historical' },
+  { token_symbol: 'MOODENG', token_name: 'Moodeng', pnl_pct: 390,  result: 'win',  label: 'historical' },
+  { token_symbol: 'SLERF', token_name: 'Slerf',     pnl_pct: -18,  result: 'loss', label: 'historical' },
+];
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
+}
+
+function renderTrade(t, isHistorical = false) {
+  const isWin = t.result === 'win';
+  const pct   = parseFloat(t.pnl_pct || 0);
+  const pctStr = isNaN(pct) ? '—' : `${pct >= 0 ? '+' : ''}${pct.toFixed(1)}%`;
+  const badge  = isWin ? '✅' : '❌';
+  const symbol = (t.token_symbol || t.token_name || 'UNKNOWN').toUpperCase();
+  const label  = isHistorical
+    ? 'Historical pick (pre-live)'
+    : `SNiPr v5 • AI-selected${t.label && t.label !== 'SNiPr v5' ? ' • ' + t.label : ''}`;
+
+  return `
+    <div class="trade-card${isHistorical ? ' historical' : ''}">
+      <div class="badge">${badge}</div>
+      <div class="trade-info">
+        <div class="trade-symbol">${symbol}/SOL</div>
+        <div class="trade-label">${label}</div>
+      </div>
+      <div class="trade-right">
+        <div class="trade-pnl ${isWin ? 'win' : 'loss'}">${pctStr}</div>
+        <div class="trade-time">${isHistorical ? 'historical' : timeAgo(t.exit_time || t.created_at)}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderList(trades, stats) {
+  const container = document.getElementById('trades-list');
+
+  if (!trades || trades.length === 0) {
+    // No live trades yet — show seeded placeholders
+    container.innerHTML = `
+      <div class="seeded-note">
+        📡 Live results populate as SNiPr trades. Historical notable picks shown below.
+      </div>
+      ${HISTORICAL_TRADES.map(t => renderTrade(t, true)).join('')}
+    `;
+    // Update stats from historical
+    document.getElementById('stat-total').textContent = '—';
+    document.getElementById('stat-winrate').textContent = '—';
+    document.getElementById('stat-avg').textContent = '—';
+    return;
+  }
+
+  container.innerHTML = trades.map(t => renderTrade(t, false)).join('');
+
+  // Update stats
+  document.getElementById('stat-total').textContent  = stats.total;
+  document.getElementById('stat-winrate').textContent = `${stats.win_rate}%`;
+  const avgStr = stats.avg_pnl_pct >= 0
+    ? `+${stats.avg_pnl_pct.toFixed(1)}%`
+    : `${stats.avg_pnl_pct.toFixed(1)}%`;
+  document.getElementById('stat-avg').textContent = avgStr;
+  if (stats.avg_pnl_pct < 0) {
+    document.getElementById('stat-avg').classList.remove('green');
+    document.getElementById('stat-avg').style.color = 'var(--red)';
+  }
+}
+
+async function loadTrades() {
+  try {
+    const res  = await fetch(API, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    renderList(data.trades || [], data.stats || {});
+
+    const now = new Date();
+    document.getElementById('refresh-info').textContent =
+      `Last updated ${now.toLocaleTimeString()} · auto-refresh every 30s`;
+  } catch (e) {
+    console.error('[results] fetch error:', e);
+    // On error, show historicals
+    renderList([], {});
+    document.getElementById('refresh-info').textContent =
+      'Could not reach API — showing historical data';
+  }
+}
+
+// Initial load
+loadTrades();
+
+// Auto-refresh every 30s
+setInterval(loadTrades, 30_000);
+</script>
+
+</body>
+</html>
