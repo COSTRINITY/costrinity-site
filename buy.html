@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buy SNiPr v5 — Solana Trading Bot | COS TRINITY</title>
+  <meta name="description" content="Get SNiPr v5 — the AI-powered Solana token sniper. Sub-200ms entry, automated trading, self-hosted. Choose your plan and start trading today." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://js.stripe.com/v3/"></script>
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #06061a;
+      --bg2:          #09092a;
+      --surface:      #0e0e38;
+      --card:         #0d0d32;
+      --border:       rgba(139,92,246,0.2);
+      --border-glow:  rgba(139,92,246,0.55);
+      --purple:       #7c3aed;
+      --purple-lt:    #a78bfa;
+      --purple-dim:   rgba(139,92,246,0.12);
+      --gold:         #f4c24f;
+      --gold-dim:     rgba(244,194,79,0.1);
+      --text:         #e8eaf0;
+      --muted:        rgba(232,234,240,0.48);
+      --green:        #4ade80;
+      --red:          #f87171;
+      --mono:         'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── AMBIENT BG ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 90% 55% at 50% -5%, rgba(109,40,217,0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 90% 70%, rgba(91,33,182,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 5% 80%, rgba(76,29,149,0.10) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 16px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(6,6,26,0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none;
+    }
+    .nav-logo { width: 38px; height: 38px; object-fit: contain; filter: invert(1) sepia(1) saturate(6) hue-rotate(10deg); }
+    .nav-wordmark {
+      font-size: 14px; font-weight: 800;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--purple-lt);
+    }
+    .nav-wordmark em { color: var(--gold); font-style: normal; }
+
+    .nav-links { display: flex; gap: 36px; align-items: center; }
+    .nav-links a {
+      color: var(--muted); font-size: 13px; font-weight: 500;
+      text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ─── MAIN CONTAINER ─── */
+    .container {
+      position: relative; z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 140px 24px 80px;
+    }
+
+    /* ─── HEADER ─── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .page-header h1 {
+      font-size: clamp(32px, 6vw, 56px);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .page-header h1 span { color: var(--gold); }
+
+    .page-header p {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(74,222,128,0.15);
+      border: 1px solid rgba(74,222,128,0.4);
+      border-radius: 999px;
+      padding: 8px 20px;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 24px;
+    }
+
+    .badge-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.9); }
+    }
+
+    /* ─── PRICING GRID ─── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+
+    .pricing-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+
+    .pricing-card:hover {
+      border-color: var(--border-glow);
+      box-shadow: 0 0 40px rgba(139,92,246,0.15);
+      transform: translateY(-4px);
+    }
+
+    .pricing-card.featured {
+      border-color: var(--gold);
+      background: linear-gradient(135deg, var(--card) 0%, rgba(244,194,79,0.08) 100%);
+      position: relative;
+    }
+
+    .pricing-card.featured::before {
+      content: 'MOST POPULAR';
+      position: absolute;
+      top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--gold);
+      color: var(--bg);
+      font-size: 11px; font-weight: 800;
+      letter-spacing: 0.1em;
+      padding: 6px 16px;
+      border-radius: 999px;
+    }
+
+    .tier-name {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--purple-lt);
+      margin-bottom: 8px;
+    }
+
+    .pricing-card.featured .tier-name { color: var(--gold); }
+
+    .tier-price {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .price-amount {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    .price-period {
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    .tier-desc {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .feature-list {
+      list-style: none;
+      flex: 1;
+      margin-bottom: 32px;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .feature-list li::before {
+      content: '✓';
+      color: var(--green);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .feature-list li.disabled {
+      color: var(--muted);
+    }
+
+    .feature-list li.disabled::before {
+      content: '−';
+      color: var(--muted);
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 32px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple) 0%, #9333ea 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(139,92,246,0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(139,92,246,0.5);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold) 0%, #eab308 100%);
+      color: var(--bg);
+      box-shadow: 0 4px 20px rgba(244,194,79,0.4);
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(244,194,79,0.5);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--border-glow);
+      color: var(--purple-lt);
+    }
+
+    .btn-outline:hover {
+      background: var(--purple-dim);
+      border-color: var(--purple);
+    }
+
+    /* ─── CRYPTO SECTION ─── */
+    .crypto-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px;
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .crypto-section h2 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .crypto-section h2 span { color: var(--gold); }
+
+    .crypto-section > p {
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    .wallet-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      max-width: 600px;
+      margin: 0 auto 24px;
+    }
+
+    .wallet-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--purple-lt);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .sol-icon {
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, #00FFA3 0%, #DC1FFF 100%);
+      border-radius: 50%;
+    }
+
+    .wallet-address {
+      font-family: var(--mono);
+      font-size: 14px;
+      color: var(--text);
+      background: var(--bg);
+      padding: 16px 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      width: 100%;
+      word-break: break-all;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .wallet-address:hover {
+      border-color: var(--purple);
+    }
+
+    .copy-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .crypto-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      max-width: 800px;
+      margin: 32px auto 0;
+    }
+
+    .crypto-step {
+      text-align: center;
+    }
+
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px; height: 40px;
+      background: var(--purple-dim);
+      border: 1px solid var(--border-glow);
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--purple-lt);
+      margin-bottom: 12px;
+    }
+
+    .crypto-step h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .crypto-step p {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ─── FAQ ─── */
+    .faq-section {
+      max-width: 800px;
+      margin: 0 auto 80px;
+    }
+
+    .faq-section h2 {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 40px;
+    }
+
+    .faq-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .faq-item h4 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--purple-lt);
+    }
+
+    .faq-item p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      text-align: center;
+      padding: 48px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer a {
+      color: var(--purple-lt);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 12px 20px; }
+      .nav-links { display: none; }
+      .container { padding: 120px 16px 60px; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .crypto-section { padding: 32px 20px; }
+    }
+
+    /* ─── TOAST ─── */
+    .toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--green);
+      color: var(--bg);
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-brand">
+      <img src="logo.jpg" alt="COS TRINITY" class="nav-logo" />
+      <span class="nav-wordmark">COS <em>TRINITY</em></span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/docs.html">Docs</a>
+      <a href="/status.html">Status</a>
+      <a href="https://t.me/COSTRINSNIPBOT" target="_blank">Support</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Self-Hosted Trading Bot
+      </div>
+      <h1>Get <span>SNiPr v5</span></h1>
+      <p>The AI-powered Solana token sniper. Sub-200ms entry, automated position management, and 100% self-custody. Download and run on your own infrastructure.</p>
+    </header>
+
+    <!-- Pricing Grid -->
+    <section class="pricing-grid">
+      <!-- Starter Tier -->
+      <div class="pricing-card">
+        <div class="tier-name">Starter</div>
+        <div class="tier-price">
+          <span class="price-amount">$49</span>
+          <span class="price-period">one-time</span>
+        </div>
+        <p class="tier-desc">Perfect for trying out SNiPr on your own setup</p>
+        <ul class="feature-list">
+          <li>SNiPr v5 core package</li>
+          <li>Sub-200ms token sniping</li>
+          <li>Basic AI token filtering</li>
+          <li>Telegram notifications</li>
+          <li>Self-custody — your keys, your coins</li>
+          <li class="disabled">No priority updates</li>
+          <li class="disabled">No premium support</li>
+        </ul>
+        <button class="btn btn-outline" 
+                data-stripe-tier="starter"
+                data-stripe-price-id="price_STARTER_ID"
+                onclick="handleCheckout('starter')">
+          Get Starter
+        </button>
+      </div>
+
+      <!-- Pro Tier -->
+      <div class="pricing-card featured">
+        <div class="tier-name">Pro</div>
+        <div class="tier-price">
+          <span class="price-amount">$99</span>
+          <span class="price-period">one-time</span>
+        </div>
+        <p class="tier-desc">Best value — lifetime access with all updates included</p>
+        <ul class="feature-list">
+          <li>Everything in Starter</li>
+          <li>Advanced AI filtering (rugs, honeypots)</li>
+          <li>Multi-wallet support</li>
+          <li>Automatic take-profit & stop-loss</li>
+          <li>Priority feature updates forever</li>
+          <li>Discord community access</li>
+          <li class="disabled">No direct support line</li>
+        </ul>
+        <button class="btn btn-gold" 
+                data-stripe-tier="pro"
+                data-stripe-price-id="price_PRO_ID"
+                onclick="handleCheckout('pro')">
+          Get Pro — Best Value
+        </button>
+      </div>
+
+      <!-- Elite Tier -->
+      <div class="pricing-card">
+        <div class="tier-name">Elite</div>
+        <div class="tier-price">
+          <span class="price-amount">$29</span>
+          <span class="price-period">/month</span>
+        </div>
+        <p class="tier-desc">For serious traders who want maximum edge</p>
+        <ul class="feature-list">
+          <li>Everything in Pro</li>
+          <li>Alpha token signals channel</li>
+          <li>Early access to v6 features</li>
+          <li>Private trading strategies</li>
+          <li>1-on-1 setup assistance</li>
+          <li>Direct Telegram support line</li>
+          <li>Custom configuration help</li>
+        </ul>
+        <button class="btn btn-primary" 
+                data-stripe-tier="elite"
+                data-stripe-price-id="price_ELITE_ID"
+                onclick="handleCheckout('elite')">
+          Subscribe to Elite
+        </button>
+      </div>
+    </section>
+
+    <!-- Crypto Payment Section -->
+    <section class="crypto-section">
+      <h2>Pay with <span>Crypto</span></h2>
+      <p>Prefer to pay with SOL? Send the exact amount and contact us with your transaction signature.</p>
+      
+      <div class="wallet-box">
+        <div class="wallet-label">
+          <div class="sol-icon"></div>
+          Solana Payment Address
+        </div>
+        <div class="wallet-address" onclick="copyAddress(this)" title="Click to copy">
+          5b1aWKHyS1JVuK9g9wWx7w7uUC15hiLMVLd7fzaLNbJ7
+        </div>
+        <span class="copy-hint">Click to copy • Include tier in memo (e.g., "SNIPR:PRO")</span>
+      </div>
+
+      <div class="crypto-steps">
+        <div class="crypto-step">
+          <div class="step-num">1</div>
+          <h4>Send SOL</h4>
+          <p>$49, $99, or $29 worth of SOL with tier memo</p>
+        </div>
+        <div class="crypto-step">
+          <div class="step-num">2</div>
+          <h4>Contact Us</h4>
+          <p>Send tx signature to @COSTRINSNIPBOT</p>
+        </div>
+        <div class="crypto-step">
+          <div class="step-num">3</div>
+          <h4>Get License</h4>
+          <p>Receive your license key + download</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+      <h2>Questions?</h2>
+      
+      <div class="faq-item">
+        <h4>What happens after I purchase?</h4>
+        <p>You'll receive a license key (SNIPR-XXXX-XXXX-XXXX) and a download link for the SNiPr package. The key activates your instance and unlocks your tier's features. Setup takes about 5 minutes.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Is my private key safe?</h4>
+        <p>100% safe. SNiPr runs entirely on YOUR machine. Your private key stays in your local .env file and never leaves your system. We can't access it — nobody can. That's the point of self-custody.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>What are the system requirements?</h4>
+        <p>Node.js 18+, a Solana RPC endpoint (we recommend Helius or QuickNode), and a machine that can stay online. Works on Linux, Mac, Windows, VPS, or Raspberry Pi.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>Can I upgrade my tier later?</h4>
+        <p>Yes! Contact us via Telegram and pay the difference. Your license key will be upgraded within minutes.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>What's the refund policy?</h4>
+        <p>Due to the digital nature of the product, we don't offer refunds after license delivery. We're confident you'll love it — but reach out if you have issues and we'll help you get running.</p>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>© 2026 COS TRINITY. All rights reserved.</p>
+    <p style="margin-top: 8px;">
+      <a href="/">Home</a> · 
+      <a href="/docs.html">Documentation</a> · 
+      <a href="https://t.me/COSTRINSNIPBOT">Telegram Support</a>
+    </p>
+  </footer>
+
+  <div class="toast" id="toast">Copied to clipboard!</div>
+
+  <script>
+    // Copy wallet address
+    function copyAddress(el) {
+      const address = el.textContent.trim();
+      navigator.clipboard.writeText(address).then(() => {
+        showToast('Copied to clipboard!');
+      });
+    }
+
+    // Show toast notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // Handle Stripe checkout
+    // Note: Replace with actual Stripe publishable key
+    function handleCheckout(tier) {
+      const priceIds = {
+        starter: 'price_STARTER_REPLACE_ME',
+        pro: 'price_PRO_REPLACE_ME',
+        elite: 'price_ELITE_REPLACE_ME'
+      };
+
+      // Placeholder: When Stripe is configured, use this:
+      // const stripe = Stripe('pk_live_YOUR_PUBLISHABLE_KEY');
+      // stripe.redirectToCheckout({ lineItems: [{ price: priceIds[tier], quantity: 1 }], mode: tier === 'elite' ? 'subscription' : 'payment', successUrl: window.location.origin + '/success.html?tier=' + tier, cancelUrl: window.location.origin + '/buy.html' });
+      
+      // For now, show instructions
+      alert(`🔱 SNiPr ${tier.toUpperCase()} Selected!\n\nStripe checkout will be enabled soon.\n\nFor now, pay with SOL:\n1. Send payment to the wallet address below\n2. Include "${tier.toUpperCase()}" in the memo\n3. Contact @COSTRINSNIPBOT with your tx signature`);
+    }
+  </script>
+</body>
+</html>
